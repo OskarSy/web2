@@ -1,4 +1,3 @@
-# Webte2
 # Webte2 [zaverecne_zadanie_2023.pdf](https://github.com/OskarSy/Webte2/files/11334891/zaverecne_zadanie_2023.pdf)
 
 ![image](https://user-images.githubusercontent.com/100996992/234632744-9f567150-c197-4bd9-8c76-6065d0998db8.png)
