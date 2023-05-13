@@ -4,5 +4,9 @@ export default {
         "password" : "Password",
         "or" : "Or",
         "noAccount" : "Don't have an account yet?",
-        "register" : "Register"
+        "register" : "Register",
+        "solution":"Show solution",
+        "EqTask":"Find the transfer function:",
+        "EqDescription":"for system described by block schema",
+        "EqOdozvaTask":"Calculate transition function for system described by transfer function:"
 }
