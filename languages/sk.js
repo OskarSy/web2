@@ -21,6 +21,7 @@ export default {
     "EqDescription": "pre systém opísaný blokovou schémou",
     "EqOdozvaTask": "Vypočítajte prechodovú funkciu pre systém opísaný prenosovou funkciou:",
     "EqOdozva2Task": "Vypočítajte odozvu systému popísaného diferenciálnou rovnicou :",
-    "EqOdozva2Description": "na jednotkový skok, ak počiatočné podmienky sú:"
+    "EqOdozva2Description": "na jednotkový skok, ak počiatočné podmienky sú:",
+    "submit": "Odovzdať"
 
 }

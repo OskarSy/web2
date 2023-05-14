@@ -54,7 +54,7 @@ require("../api/equationFunctionionality.php");
                             <a class="nav-link active" aria-current="page" href="#">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Link</a>
+                            <a class="nav-link" href="../api/logout.php">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -66,7 +66,7 @@ require("../api/equationFunctionionality.php");
         echo $blokovkaLogic;
         ?>
         <div id="mathquill-editor"></div>
-        <button id="submit-btn">Submit</button>
+        <button id="submit-btn" data-translate="submit">Submit</button>
     </div>
 
 
