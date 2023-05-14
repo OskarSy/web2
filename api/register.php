@@ -1,6 +1,10 @@
 <?php
 require 'config.php';
 
+if (!empty($_SESSION["id"])) {
+  header("Location: https://site215.webte.fei.stuba.sk/semestralka/views/equations.php");
+}
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

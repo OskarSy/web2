@@ -1,8 +1,7 @@
 <?php
-require '.config.php';
-session_start();
+require 'config.php';
 if (empty($_SESSION["id"])) {
-    header("Location: https://site215.webte.fei.stuba.sk/semestralka/api/login.php");
+    header("Location: https://site215.webte.fei.stuba.sk/semestralka");
 }
 $email=$_SESSION['email'];
 $id=$_SESSION['id'];

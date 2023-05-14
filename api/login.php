@@ -1,6 +1,8 @@
 <?php
 require 'config.php';
-
+if (!empty($_SESSION["id"])) {
+    header("Location: https://site215.webte.fei.stuba.sk/semestralka/views/equations.php");
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $json = file_get_contents('php://input');
