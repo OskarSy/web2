@@ -1,4 +1,6 @@
 <?php
+require 'config.php';
+
 // Read the LaTeX file content
 $filenames = array(
     '../equations/latex/odozva01pr.tex',
@@ -21,7 +23,7 @@ $taskSymbols = [];
 $solutions = [];
 $systemDescription = [];
 $imagePath = [];
-$descSymbols=[];
+$descSymbols = [];
 
 // Match task environments
 if (preg_match_all($taskRegex, $latexContent, $taskMatches)) {
@@ -59,18 +61,17 @@ foreach ($tasks as $index => $task) {
     $equation1 = preg_replace($pattern, $replacement, $task);
     if (!isBlokovka($latexFile)) {
         $pattern = '/(.*?)\sfunkciou\b/';
-    preg_match($pattern, $equation1, $matches);
-    $equation = $matches[1];
-    $buffer=$equation." funkciou";
-    $task[$index]=$buffer;
-    if(od1($latexFile)){
-         forBlokovka1($index,$equation,$tasks,$taskSymbols,$task);
-    }
-    else{
-        forBlokovka2($index, $task, $tasks, $taskSymbols, $descSymbols,$systemDescriptions);
-    }
+        preg_match($pattern, $equation1, $matches);
+        $equation = $matches[1];
+        $buffer = $equation . " funkciou";
+        $task[$index] = $buffer;
+        if (od1($latexFile)) {
+            forBlokovka1($index, $equation, $tasks, $taskSymbols, $task);
+        } else {
+            forBlokovka2($index, $task, $tasks, $taskSymbols, $descSymbols, $systemDescriptions);
+        }
 
-    
+
     } else {
         $taskSymbols[$index] = createEquation($equation1);
         $tasks[$index] = createTask($equation1, $taskSymbols[$index]);
@@ -90,12 +91,12 @@ foreach ($solutions as $index => $solution) {
 }
 
 
-function forBlokovka2($index, $task, &$tasks, &$taskSymbols, &$descSymbols,&$systemDescriptions)
+function forBlokovka2($index, $task, &$tasks, &$taskSymbols, &$descSymbols, &$systemDescriptions)
 {
     $systemDescriptions[$index] = createTask2($task);
 
     $descSymbols[$index] = explode($systemDescriptions[$index], $tasks[$index]);
-    $descSymbols[$index]=$descSymbols[$index][1];
+    $descSymbols[$index] = $descSymbols[$index][1];
 
     $result = explode($descSymbols[$index], $task);
     $pattern = '/(.*?)(\sna.*)/i';
@@ -108,12 +109,13 @@ function forBlokovka2($index, $task, &$tasks, &$taskSymbols, &$descSymbols,&$sys
 
 
 
-function forBlokovka1($index,$equation,&$tasks,&$taskSymbols,$task){
+function forBlokovka1($index, $equation, &$tasks, &$taskSymbols, $task)
+{
 
-    $buffer=$equation." funkciou";
+    $buffer = $equation . " funkciou";
     $taskSymbols[$index] = explode($buffer, $tasks[$index]);
-    $taskSymbols[$index]=$taskSymbols[$index][1];
-    $tasks[$index]=$buffer;
+    $taskSymbols[$index] = $taskSymbols[$index][1];
+    $tasks[$index] = $buffer;
 }
 
 
@@ -123,12 +125,12 @@ function forBlokovka1($index,$equation,&$tasks,&$taskSymbols,$task){
 
 function createEquation($equation1)
 {
-        $pattern = '/funkciu(.+)/i';
-        preg_match($pattern, $equation1, $matches);
-        $equation = $matches[1];
-        $pattern = '/(.*?)\spre\b/';
-        preg_match($pattern, $equation, $matches);
-        $equation = $matches[1];
+    $pattern = '/funkciu(.+)/i';
+    preg_match($pattern, $equation1, $matches);
+    $equation = $matches[1];
+    $pattern = '/(.*?)\spre\b/';
+    preg_match($pattern, $equation, $matches);
+    $equation = $matches[1];
     return $equation;
 }
 function createTask($equation1, $toRemove)
@@ -169,40 +171,41 @@ function createDescription($equation, $equation1)
     return $modifiedText;
 }
 
-function isBlokovka($latexFile){
+function isBlokovka($latexFile)
+{
     $pattern = '/\/([^\/\d]+)\d*pr\.tex$/';
-preg_match($pattern, $latexFile, $matches);
-$extractedValue = $matches[1];
-if($extractedValue=="blokovka"){
-    return true;  
-}else if($extractedValue=="odozva"){
-    return false;
-}
-else{
-    echo("Pozri si cestu k latex file ".$extractedValue);
-}
+    preg_match($pattern, $latexFile, $matches);
+    $extractedValue = $matches[1];
+    if ($extractedValue == "blokovka") {
+        return true;
+    } else if ($extractedValue == "odozva") {
+        return false;
+    } else {
+        echo ("Pozri si cestu k latex file " . $extractedValue);
+    }
 }
 
-function od1($latexFile){
+function od1($latexFile)
+{
     $pattern = '/\/([^\/\d]+(?:\d+\w*)?)\d*pr\.tex$/';
-preg_match($pattern, $latexFile, $matches);
-$extractedValue = $matches[1];
-if($extractedValue=="odozva01"){
-    return true;  
-}else if($extractedValue=="odozva02"){
-    return false;
-}
-else{
-    echo("Pozri si cestu k latex file ".$extractedValue);
-}
+    preg_match($pattern, $latexFile, $matches);
+    $extractedValue = $matches[1];
+    if ($extractedValue == "odozva01") {
+        return true;
+    } else if ($extractedValue == "odozva02") {
+        return false;
+    } else {
+        echo ("Pozri si cestu k latex file " . $extractedValue);
+    }
 }
 $i = generate($tasks);
-function generate($tasks){
-    return rand(0, count($tasks) - 1); 
+function generate($tasks)
+{
+    return rand(0, count($tasks) - 1);
 }
 
-if(isBlokovka($latexFile)){
-$blokovkaLogic = '
+if (isBlokovka($latexFile)) {
+    $blokovkaLogic = '
 <div id="task" class="text-center">';
     $blokovkaLogic .= '
     <p data-translate="EqTask">' . $tasks[$i] . '</p>
@@ -211,43 +214,92 @@ $blokovkaLogic = '
     <div class="image-container">
         <img src="' . $imagePath[$i] . '" alt="' . $systemDescriptions[$i] . '" class="img-fluid">
     </div>';
-$blokovkaLogic .= '
+    $blokovkaLogic .= '
 </div>
 <div id="solution" style="display: none;">';
     $blokovkaLogic .= '
     <p>' . "\(" . $solutions[$i] . "\)" . '</p>';
-$blokovkaLogic .= '
+    $blokovkaLogic .= '
 </div>
 <button id="toggleSolution" onclick="toggleSolution()" data-translate="solution">Show solution</button>';
-}else{
+} else {
 
 
 
 
-$blokovkaLogic = '
+    $blokovkaLogic = '
 <div id="task" class="text-center">';
-    if(!od1($latexFile)){
-    $blokovkaLogic .= '
+    if (!od1($latexFile)) {
+        $blokovkaLogic .= '
     <p data-translate="EqOdozva2Task">' . $tasks[$i] . '</p>
     <p>' . "\(" . $taskSymbols[$i] . "\)" . '</p>
     <p data-translate="EqOdozva2Description">' . $systemDescriptions[$i] . '</p>
-    <p>' . "\(" . $descSymbols[$i] . "\)" . '</p>';}
-    else{
+    <p>' . "\(" . $descSymbols[$i] . "\)" . '</p>';
+    } else {
         $blokovkaLogic .= '
         <p data-translate="EqOdozvaTask">' . $tasks[$i] . '</p>
         <p>' . "\(" . $taskSymbols[$i] . "\)" . '</p>';
     }
 
-$blokovkaLogic .= '
+    $blokovkaLogic .= '
 </div>
 <div id="solution" style="display: none;">';
     $blokovkaLogic .= '
     <p>' . "\(" . $solutions[$i] . "\)" . '</p>';
 
-$blokovkaLogic .= '
+    $blokovkaLogic .= '
 </div>
 <button id="toggleSolution" onclick="toggleSolution()" data-translate="solution">Show solution</button>';
 }
-echo $solutions[$i] ;
-?>
 
+
+
+$solutions[$i] = str_replace(' ', '', $solutions[$i]);
+$solutions[$i] = preg_replace('/\s/', '', $solutions[$i]);
+echo $solutions[$i] . '<br>'; //ECHOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+$result = $conn->query("SELECT * FROM Assignments");
+$foundDuplicate = false;
+
+while ($row = $result->fetch_assoc()) {
+    $correctAnswer = $row['correctAnswer'];
+
+    if ($correctAnswer == $solutions[$i]) {
+        $foundDuplicate = true;
+        break;
+    }
+}
+
+if ($foundDuplicate) {
+}
+ else {
+    // No duplicate entry found, proceed with the insertion
+    $subString = substring($latexFile);
+    $maxPnts = count($tasks) * 15;
+    $pnts = 15;
+    $result = $conn->query("SELECT id FROM AssignmentGroup WHERE name='$subString'");
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $groupId = $row['id'];
+    } else {
+        $canBeUsed = true;
+        $stmt = $conn->prepare('INSERT INTO AssignmentGroup (name, maxPoints, canBeUsed) VALUES (?, ?, ?)');
+        $stmt->bind_param('sis', $subString, $maxPnts, $canBeUsed);
+        $stmt->execute();
+        $groupId = $stmt->insert_id;
+    }
+    $stmt = $conn->prepare('INSERT INTO Assignments (correctAnswer, body, maxPoints, groupId) VALUES (?, ?, ?, ?)');
+    $stmt->bind_param('sssi', $solutions[$i], $tasks[$i], $pnts, $groupId);
+    $stmt->execute();
+}
+
+
+
+function substring($latexFile)
+{
+    $pattern = '/\/([^\/\d]+(?:\d+\w*)?)\d*pr\.tex$/';
+    preg_match($pattern, $latexFile, $matches);
+    $extractedValue = $matches[1];
+    return $extractedValue;
+}
+
+?>
