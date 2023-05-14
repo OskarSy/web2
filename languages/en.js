@@ -1,12 +1,24 @@
 export default {
-        "login" : "Login",
-        "email" : "Welcome",
-        "password" : "Password",
-        "or" : "Or",
-        "noAccount" : "Don't have an account yet?",
-        "register" : "Register",
-        "solution":"Show solution",
-        "EqTask":"Find the transfer function:",
-        "EqDescription":"for system described by block schema",
-        "EqOdozvaTask":"Calculate transition function for system described by transfer function:"
+        "login": "Log in",
+        "loginPage": "Log in",
+        "registration": "Registration",
+        "email": "Email",
+        "emailError": "It must contain at least 2 characters for each group (2@2.2).",
+        "password": "Password",
+        "passwordError": "Must contain 3 numbers, 2 capital letters, and have a length of at least 8 ASCII characters",
+        "noAccountYet": "Don't have an account yet?",
+        "register": "Register",
+        "wrongPassword": "Wrong password",
+        "wrongEmail": "User with that email is not registered",
+        "loginError": "Login error",
+        "role": "Role",
+        "student": "Student",
+        "teacher": "Teacher",
+
+        //JAKUP=============================================================================
+
+        "solution": "Show solution",
+        "EqTask": "Find the transfer function:",
+        "EqDescription": "for system described by block schema",
+        "EqOdozvaTask": "Calculate transition function for system described by transfer function:"
 }

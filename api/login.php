@@ -1,33 +1,38 @@
 <?php
-require './config/config.php';
+require 'config.php';
 
-if (!empty($_SESSION["id"])) {
-    header("Location: https://site215.webte.fei.stuba.sk/semestralka");
-}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $json = file_get_contents('php://input');
     $formData = json_decode($json);
-
-    $login = $formData->login;
+    $email = $formData->email;
     $password = $formData->password;
 
-    $personResult = mysqli_query($conn, "SELECT * FROM User WHERE email = '$login'");
+    $userResult = mysqli_query($conn, "SELECT * FROM User WHERE email = '$email'");
 
-    if (mysqli_num_rows($personResult) > 0) {
-        $person = mysqli_fetch_assoc($personResult);
-        if (password_verify($password, $person['password'])) {
-            $currentId = $person['id'];
+    if (mysqli_num_rows($userResult) > 0) {
+        $user = mysqli_fetch_assoc($userResult);
+        if (password_verify($password, $user['password'])) {
+            $currentId = $user['id'];
+            $role = $user['role'];
 
-            echo(json_encode(['error' => false,'body'=>["id"=>$currentId,"email"=>$person['email']]]));
+            $_SESSION['email'] = $email;
+            $_SESSION['role'] = $role;
+            if($role == 'student'){
+                header("Location: https://site215.webte.fei.stuba.sk/semestralka/views/equations.php");
+            }
+            elseif($role=='teacher'){
+                // header("Location: https://site215.webte.fei.stuba.sk/semestralka/views/equations.php");
+            }
         } 
         else 
         {
-            echo(json_encode(['error' => true,'body'=>'Wrong password or username']));
+            echo('wrongPassword');
         }
-    } 
+    }
     else 
     {
-        echo(json_encode(['error' => true,'body'=>'User is not registered']));
+        echo('wrongEmail');
     }
     exit();
-}
+}?>

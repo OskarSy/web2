@@ -1,5 +1,5 @@
 <?php
-require './config/config.php';
+require '.config.php';
 session_start();
 if (empty($_SESSION["id"])) {
     header("Location: https://site215.webte.fei.stuba.sk/semestralka/api/login.php");
