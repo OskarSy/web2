@@ -1,5 +1,5 @@
 <?php
-require("../functions/equationFunctionionality.php");
+require("../api/equationFunctionionality.php");
 ?>
 <!DOCTYPE html>
 <html lang="en">
