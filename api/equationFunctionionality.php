@@ -247,4 +247,7 @@ $blokovkaLogic .= '
 $blokovkaLogic .= '
 </div>
 <button id="toggleSolution" onclick="toggleSolution()" data-translate="solution">Show solution</button>';
-}?>
+}
+echo $solutions[$i] ;
+?>
+
