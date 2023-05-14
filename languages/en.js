@@ -20,5 +20,7 @@ export default {
         "solution": "Show solution",
         "EqTask": "Find the transfer function:",
         "EqDescription": "for system described by block schema",
-        "EqOdozvaTask": "Calculate transition function for system described by transfer function:"
+        "EqOdozvaTask": "Calculate transition function for system described by transfer function:",
+        "EqOdozva2Task": "Calculate the response of the system described by the differential equation:",
+        "EqOdozva2Description": "per unit jump if the initial conditions are:"
 }

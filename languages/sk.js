@@ -19,6 +19,8 @@ export default {
     "solution": "Ukáž výsledok",
     "EqTask": "Nájdite prenosovú funkciu:",
     "EqDescription": "pre systém opísaný blokovou schémou",
-    "EqOdozvaTask": "Vypočítajte prechodovú funkciu pre systém opísaný prenosovou funkciou:"
+    "EqOdozvaTask": "Vypočítajte prechodovú funkciu pre systém opísaný prenosovou funkciou:",
+    "EqOdozva2Task": "Vypočítajte odozvu systému popísaného diferenciálnou rovnicou :",
+    "EqOdozva2Description": "na jednotkový skok, ak počiatočné podmienky sú:"
 
 }
