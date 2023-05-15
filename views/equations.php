@@ -1,5 +1,12 @@
 <?php
 require("../api/equationFunctionionality.php");
+// Define the sidebar items
+$sidebarItems = array(
+    '1' => 'https://site215.webte.fei.stuba.sk/semestralka/views/equations.php?i=0',
+    '2' => 'https://site215.webte.fei.stuba.sk/semestralka/views/equations.php?i=1',
+    '3' => 'https://site215.webte.fei.stuba.sk/semestralka/views/equations.php?i=2',
+    '4' => 'https://site215.webte.fei.stuba.sk/semestralka/views/equations.php?i=3'
+);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,6 +40,29 @@ require("../api/equationFunctionionality.php");
             width: 400px;
             height: 200px;
         }
+        .sidebar {
+            width: 200px;
+            background-color: #f0f0f0;
+            padding: 10px;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 5px;
+            background-color: #ddd;
+            text-decoration: none;
+            color: #333;
+        }
     </style>
 </head>
 
@@ -63,12 +93,20 @@ require("../api/equationFunctionionality.php");
     </header>
     <div class="container">
         <?php
+        
         echo $blokovkaLogic;
+        
         ?>
         <div id="mathquill-editor"></div>
         <button id="submit-btn" data-translate="submit">Submit</button>
     </div>
-
+    <div class="sidebar">
+        <ul>
+            <?php foreach ($sidebarItems as $label => $url) { ?>
+                <li><a href="<?php echo $url; ?>"><?php echo $label; ?></a></li>
+            <?php } ?>
+        </ul>
+    </div>
 
     <script type="text/javascript">
         $(document).ready(function () {
