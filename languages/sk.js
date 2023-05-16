@@ -23,6 +23,7 @@ export default {
     "EqOdozvaTask": "Vypočítajte prechodovú funkciu pre systém opísaný prenosovou funkciou:",
     "EqOdozva2Task": "Vypočítajte odozvu systému popísaného diferenciálnou rovnicou :",
     "EqOdozva2Description": "na jednotkový skok, ak počiatočné podmienky sú:",
-    "submit": "Odovzdať"
+    "submit": "Odovzdať",
+    "generateEQ":"Generuj príklady"
 
 }

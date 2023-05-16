@@ -1,7 +1,13 @@
 <?php
 require 'config.php';
 
+$sessionId = $_SESSION["id"] ?? null;
 
+// If the session ID is not available, return an error response
+if (!$sessionId) {
+    header("HTTP/1.1 401 Unauthorized");
+    exit("Unauthorized");
+}
 
     // Read the LaTeX file content
     $filenames = array(
