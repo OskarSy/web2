@@ -8,6 +8,24 @@ $systemDescription = "";
 $imagePath = "";
 $descSymbols = "";
 
+$generatedCount = [];
+
+if (isset($_GET["i"])) {
+    $assignmentId = $_GET["i"];
+    $user = $_SESSION["id"];
+    $result = $conn->query("SELECT assignmentId FROM StudentAssignmentLink WHERE studentId='$user'");
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $generatedCount[] = $row['assignmentId'];
+        }
+    }
+    if (!empty($generatedCount[$assignmentId])) {
+        $randomNumber = $generatedCount[$assignmentId];
+    } else {
+        echo ("No generated count found for the given assignment ID.");
+    }
+}
+else{
 $result = $conn->query("SELECT id FROM Assignments ORDER BY id ");
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
@@ -16,7 +34,7 @@ if ($result->num_rows > 0) {
 } else {
     echo ("error with random number query");
 }
-
+}
 
 
 $result = $conn->query("SELECT * FROM Assignments WHERE id='$randomNumber'");
