@@ -70,7 +70,7 @@ if (!empty($_SESSION["id"])) {
 
       <div>
         <span data-translate="noAccountYet">Nemáte účet?</span>
-        <a class="ms-1" href="./views/registration.html" data-translate="register">Registrovať</a>
+        <a class="ms-1" href="./views/registration.php" data-translate="register">Registrovať</a>
       </div>
     </div>
     <div class="modal text-dark" tabindex="-1" id="myModal">
@@ -131,6 +131,8 @@ if (!empty($_SESSION["id"])) {
           console.log(data);
           if (data === 'student') {
             window.location.href = './views/equations.php';
+          } else if (data === 'teacher') {
+            window.location.href = './views/teacher.php';
           }
         })
         .fail((error) => {
