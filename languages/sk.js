@@ -10,6 +10,7 @@ export default {
     "register": "Registrovať",
     "wrongPassword": "Nesprávne heslo",
     "wrongEmail": "Používateľ s takým emailom neexistuje",
+    "userAlreadyExists": "Používateľ s takým emailom už je registrovaný",
     "loginError": "Chyba pri prihlásení",
     "role": "Roľa",
     "student": "Študent",

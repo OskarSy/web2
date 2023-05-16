@@ -1,8 +1,5 @@
 <?php
 require 'config.php';
-if (!empty($_SESSION["id"])) {
-    header("Location: https://site215.webte.fei.stuba.sk/semestralka/views/equations.php");
-}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $json = file_get_contents('php://input');
@@ -18,22 +15,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $currentId = $user['id'];
             $role = $user['role'];
 
+            $_SESSION['id'] = $currentId;
             $_SESSION['email'] = $email;
             $_SESSION['role'] = $role;
-            if($role == 'student'){
-                header("Location: https://site215.webte.fei.stuba.sk/semestralka/views/equations.php");
-            }
-            elseif($role=='teacher'){
-                // header("Location: https://site215.webte.fei.stuba.sk/semestralka/views/equations.php");
-            }
+            
+            http_response_code(200);
+            echo $role;
         } 
         else 
         {
+            http_response_code(401);
             echo('wrongPassword');
         }
     }
     else 
     {
+        http_response_code(404);
         echo('wrongEmail');
     }
     exit();

@@ -10,6 +10,7 @@ export default {
         "register": "Register",
         "wrongPassword": "Wrong password",
         "wrongEmail": "User with that email is not registered",
+        "userAlreadyExists": "User with with that email already registered",
         "loginError": "Login error",
         "role": "Role",
         "student": "Student",

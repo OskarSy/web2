@@ -1,10 +1,11 @@
 <?php
-require '../api/config.php';
-
 if (!empty($_SESSION["id"])) {
-  header("Location: https://site215.webte.fei.stuba.sk/semestralka");
-}
-?>
+  if ($_SESSION["role"] == 'student') {
+    header("Location: https://site215.webte.fei.stuba.sk/semestralka/views/equations.php");
+  } elseif ($_SESSION["role"] == 'teacher') {
+    //teacher
+  }
+} ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,11 +17,11 @@ if (!empty($_SESSION["id"])) {
   <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
   <link href="../styles/all.css" rel="stylesheet">
-
   <title>Registration</title>
 </head>
 
 <body>
+  <div id="wrapper">
   <header>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid">
@@ -88,7 +89,7 @@ if (!empty($_SESSION["id"])) {
     </button>
   </div>
 
-  <div class="modal" tabindex="-1" id="myModal">
+  <div class="modal text-dark" tabindex="-1" id="myModal">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
@@ -102,6 +103,7 @@ if (!empty($_SESSION["id"])) {
         </div>
       </div>
     </div>
+  </div>
   </div>
   <script type="module" src="../languages/languageSwitching.js"></script>
 </body>
@@ -144,7 +146,6 @@ if (!empty($_SESSION["id"])) {
       $('#passwordError').hide();
     }
 
-
     if (invalidFields.length === 0) {
       let formData = {
         role: role,
@@ -153,21 +154,25 @@ if (!empty($_SESSION["id"])) {
         email: email,
         password: password
       }
-      console.log(formData);
       $.ajax({
-        type: "POST",
-        contentType: "application/json",
-        url: "/semestralka/api/register.php",
-        data: JSON.stringify(formData),
-        dataType: "json",
-      })
+          type: "POST",
+          contentType: "application/json",
+          url: "/semestralka/api/register.php",
+          data: JSON.stringify(formData),
+          dataType: "text",
+        })
         .done((data) => {
-          console.log(data);
-          $('.modal-body').html(`<span data-translate="${data.errorCause}"></span>`);
-          modal.show();         
+          if (data === 'student') {
+            window.location.href = './equations.php';
+          }
+          else if(data === 'teacher') {
+           //teacher
+          }
         })
         .fail((error) => {
           console.log(error);
+          $('.modal-body').html(`<span data-translate="${error.responseText}"></span>`);
+          modal.show();
         });
     } else {
       invalidFields.forEach(invalidField => {

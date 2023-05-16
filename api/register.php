@@ -1,10 +1,6 @@
 <?php
 require 'config.php';
 
-if (!empty($_SESSION["id"])) {
-  header("Location: https://site215.webte.fei.stuba.sk/semestralka/views/equations.php");
-}
-
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -17,21 +13,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $role = $formData->role;
 
 
-  $result = mysqli_query($conn,"SELECT email FROM User WHERE email='$email'");
-  if (mysqli_num_rows($result) > 0) {      
-    $errorData = ['error' => true, 'errorCause' => 'wrongEmail'];
-    echo(json_encode($errorData));
-  }
-  else{
+
+
+  $result = mysqli_query($conn, "SELECT email FROM User WHERE email='$email'");
+  if (mysqli_num_rows($result) > 0) {
+    http_response_code(409); 
+    echo "userAlreadyExists";
+  } else {
     $stmt = $conn->prepare('INSERT INTO User (email, password, role) VALUES (?, ?, ?)');
     $stmt->execute([$email, $password, $role]);
     $id = mysqli_insert_id($conn);
- 
-    if($role=='student'){
+
+    $_SESSION['id'] = $id;
+    $_SESSION['email'] = $email;
+    $_SESSION['role'] = $role;
+
+    if ($role == 'student') {
       $stmt = $conn->prepare('INSERT INTO Student (name, surname, userId) VALUES (?, ?, ?)');
       $stmt->execute([$name, $surname, $id]);
     }
-    header("Location: https://site215.webte.fei.stuba.sk/semestralka/index.php");
-  }  
+    http_response_code(200);
+    echo $role;
+  }
   exit();
 }
