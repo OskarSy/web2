@@ -12,11 +12,11 @@ $descSymbols = "";
 $generatedCount = [];
 
 
-
 if (isset($_GET["i"])) {
+    $userIndex=$_SESSION['userIndex'];
     $assignmentId = $_GET["i"];
     $user = $_SESSION["id"];
-    $result = $conn->query("SELECT assignmentId FROM StudentAssignmentLink WHERE studentId = '$user'");
+    $result = $conn->query("SELECT assignmentId FROM StudentAssignmentLink WHERE studentId = '$user' and userIndex='$userIndex'");
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
             $generatedCount[] = $row['assignmentId'];
@@ -25,7 +25,9 @@ if (isset($_GET["i"])) {
     if (!empty($generatedCount[$assignmentId])) {
         $randomNumber = $generatedCount[$assignmentId];
     } else {
-        echo ("No generated count found for the given assignment ID.");
+        echo ("<script>alert('No generated count found for the given assignment ID.'); window.location.href = 'https://site215.webte.fei.stuba.sk/semestralka/views/equations.php';</script>");
+
+
     }
     $_SESSION['currentEquation']=$randomNumber;
     $result = $conn->query("SELECT * FROM Assignments WHERE id='$randomNumber'");
@@ -242,6 +244,7 @@ if (isset($_GET["i"])) {
 
     echo $solutions . '<br>'; //ECHOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 } else {
-    $generateButton= '<button id="togglegeneration" onclick="toggleGeneration()" data-translate="generateEQ">Generate equations</button>';
+    $generateButton = '<button id="togglegeneration" onclick="toggleGeneration()" data-translate="generateEQ">Generate equations</button>';
+    $generateInputBox = '<input type="number" id="inputValue">';
 }
 ?>

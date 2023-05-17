@@ -1,7 +1,7 @@
 <?php
 require_once("../api/equationFunctionionality.php");
-
-$result = $conn->query("SELECT id,submittedAnswer FROM StudentAssignmentLink");
+$userIndex=$_SESSION['userIndex'];
+$result = $conn->query("SELECT id,submittedAnswer FROM StudentAssignmentLink WHERE userIndex='$userIndex'");
 
 $sidebarItems = array();
 
@@ -131,6 +131,7 @@ foreach ($sidebarItems as $assignmentId => $url) {
     <?php } else {
 
             echo ($generateButton);
+            echo ($generateInputBox);
 
         } ?>
     <script type="text/javascript">
@@ -183,24 +184,34 @@ foreach ($sidebarItems as $assignmentId => $url) {
             }
         }
         function toggleGeneration() {
-            // Make an AJAX request to the PHP file with the session ID
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "../api/get_random_ids.php", true);
+            // Get the input value
+            var inputValue = document.getElementById("inputValue").value;
 
-            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            if (inputValue > 0 || inputValue === "") {
+                // Create a FormData object and append the inputValue
+                var formData = new FormData();
+                formData.append("inputValue", inputValue);
 
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    // Handle the response from the PHP file
-                    var response = xhr.responseText;
-                    // Perform any necessary actions with the response
-                    console.log(response);
-                }
-            };
-            xhr.send();
-            location.href = "https://site215.webte.fei.stuba.sk/semestralka/views/equations.php?i=0";
+                // Make an AJAX request to the PHP file with the session ID and inputValue
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "../api/get_random_ids.php", true);
+
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        // Handle the response from the PHP file
+                        var response = xhr.responseText;
+                        // Perform any necessary actions with the response
+                        console.log(response);
+                    }
+                };
+
+                xhr.send(formData);
+
+                location.href = "https://site215.webte.fei.stuba.sk/semestralka/views/equations.php?i=0";
+            } else {
+                alert("Cannot generate " + inputValue + " number of equations");
+            }
         }
-
 
 
 
