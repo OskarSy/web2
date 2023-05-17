@@ -23,7 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $conn->prepare('INSERT INTO User (email, password, role) VALUES (?, ?, ?)');
     $stmt->execute([$email, $password, $role]);
     $id = mysqli_insert_id($conn);
-
     $_SESSION['id'] = $id;
     $_SESSION['email'] = $email;
     $_SESSION['role'] = $role;
@@ -31,6 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($role == 'student') {
       $stmt = $conn->prepare('INSERT INTO Student (name, surname, userId) VALUES (?, ?, ?)');
       $stmt->execute([$name, $surname, $id]);
+      $studentId = mysqli_insert_id($conn);
+      $_SESSION['studentId'] = $studentId;
     }
     http_response_code(200);
     echo $role;

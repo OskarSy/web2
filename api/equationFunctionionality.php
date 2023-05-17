@@ -15,7 +15,7 @@ $generatedCount = [];
 if (isset($_GET["i"])) {
     $userIndex=$_SESSION['userIndex'];
     $assignmentId = $_GET["i"];
-    $user = $_SESSION["id"];
+    $user = $_SESSION["studentId"];
     $result = $conn->query("SELECT assignmentId FROM StudentAssignmentLink WHERE studentId = '$user' and userIndex='$userIndex'");
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {

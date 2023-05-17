@@ -11,17 +11,19 @@ if (!$sessionId) {
     exit("Unauthorized");
 }
 
+$studentId=$_SESSION["studentId"];
+
 $assignmentId = $_SESSION['currentEquation'];
 $submittedAnswer = $_POST['submittedAnswer']; 
 
 $stmt = $conn->prepare("UPDATE StudentAssignmentLink SET submittedAnswer = ? WHERE studentId = ? AND assignmentId = ?");
-$stmt->bind_param('sss', $submittedAnswer, $sessionId, $assignmentId);
+$stmt->bind_param('sss', $submittedAnswer, $studentId, $assignmentId);
 $stmt->execute();
 
 $response = [
     'assignmentId' => $assignmentId,
     'submittedAnswer' => $submittedAnswer,
-    'studentId' => $sessionId
+    'studentId' => $studentId
 ];
 
 // Send the response as JSON

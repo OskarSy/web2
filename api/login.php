@@ -22,7 +22,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['id'] = $currentId;
             $_SESSION['email'] = $email;
             $_SESSION['role'] = $role;
+            $stmt = $conn->prepare("SELECT id FROM Student WHERE userId = ?");
+            $stmt->bind_param('s', $currentId);
+            $stmt->execute();
+            $result = $stmt->get_result();
             
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                $studentId = $row['id'];
+                $_SESSION['studentId'] = $studentId;
+            }
+            
+
+
             http_response_code(200);
             echo $role;
         } 

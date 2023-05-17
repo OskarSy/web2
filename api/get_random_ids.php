@@ -1,9 +1,11 @@
 <?php
 require_once ('config.php');
 
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 
 // Check if the session is active and retrieve the session ID
-session_start();
 $sessionId = $_SESSION["id"] ?? null;
 
 // If the session ID is not available, return an error response
@@ -32,7 +34,10 @@ $stmt = $conn->prepare("UPDATE Student SET generatedCount = ? where id = '$sessi
 $stmt->bind_param('s',$amountGenerated );
 $stmt->execute();
 
-$result = $conn->query("SELECT userIndex FROM StudentAssignmentLink WHERE studentId = '$sessionId' ORDER BY userIndex DESC LIMIT 1");
+$studentId=$_SESSION["studentId"];
+
+
+$result = $conn->query("SELECT userIndex FROM StudentAssignmentLink WHERE studentId = '$studentId' ORDER BY userIndex DESC LIMIT 1");
 
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
@@ -42,13 +47,15 @@ if ($result->num_rows > 0) {
     $userIndex = 0;
 }
 
+
+
 $_SESSION['userIndex'] = $userIndex;
 $randomIds = array();
 if (count($ids) >= $amountGenerated) {
     $randomKeys = array_rand($ids, $amountGenerated);
     foreach ($randomKeys as $key) {
         $stmt = $conn->prepare('INSERT INTO StudentAssignmentLink (assignmentId, studentId,userIndex) VALUES (?, ?, ?)');
-        $stmt->bind_param('sss', $ids[$key], $sessionId, $userIndex);
+        $stmt->bind_param('sss', $ids[$key], $studentId, $userIndex);
         $stmt->execute();
     }
 }
