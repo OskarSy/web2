@@ -1,7 +1,8 @@
 <?php
 require_once("../api/equationFunctionionality.php");
 $userIndex=$_SESSION['userIndex'];
-$result = $conn->query("SELECT id,submittedAnswer FROM StudentAssignmentLink WHERE userIndex='$userIndex'");
+$studentId=$_SESSION['studentId'];
+$result = $conn->query("SELECT id,submittedAnswer FROM StudentAssignmentLink WHERE userIndex='$userIndex' and studentId='$studentId'");
 
 $sidebarItems = array();
 
@@ -17,7 +18,6 @@ if ($result->num_rows > 0) {
     }
 }
 
-echo($_SESSION['studentId']);
 
 // Use the $sidebarItems array as needed
 foreach ($sidebarItems as $assignmentId => $url) {
