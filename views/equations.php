@@ -18,7 +18,7 @@ if ($result->num_rows > 0) {
     }
 }
 
-
+echo($studentId);
 // Use the $sidebarItems array as needed
 foreach ($sidebarItems as $assignmentId => $url) {
 }

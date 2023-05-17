@@ -29,12 +29,12 @@ if ($result->num_rows > 0) {
     }
 }
 
+$studentId=$_SESSION["studentId"];
 
-$stmt = $conn->prepare("UPDATE Student SET generatedCount = ? where id = '$sessionId'");
+$stmt = $conn->prepare("UPDATE Student SET generatedCount = ? where id = '$studentId'");
 $stmt->bind_param('s',$amountGenerated );
 $stmt->execute();
 
-$studentId=$_SESSION["studentId"];
 
 
 $result = $conn->query("SELECT userIndex FROM StudentAssignmentLink WHERE studentId = '$studentId' ORDER BY userIndex DESC LIMIT 1");
