@@ -13,6 +13,103 @@ while ($row = mysqli_fetch_assoc($studentResults)) {
     $results_s[] = $row;
 }
 
+function updateAssignmentGroup($conn, $dateToPost1, $dateToPost2, $canBeUsed, $id) {
+    $ass_group_sql = "UPDATE AssignmentGroup SET canBeUsedFrom = ?, canBeUsedTo = ?, canBeUsed = ? WHERE id = ?";
+    $stmt_assGroup = $conn->prepare($ass_group_sql);
+    $stmt_assGroup->bind_param("ssii", $dateToPost1, $dateToPost2, $canBeUsed, $id);
+    $stmt_assGroup->execute();
+}
+
+function updateAssignmentGroupPoints($conn, $name, $id) {
+    $ass_group_sql = "UPDATE AssignmentGroup SET maxPoints = ? WHERE id = ?";
+    $stmt_assGroup = $conn->prepare($ass_group_sql);
+    $stmt_assGroup->bind_param("si", $name, $id);
+    $stmt_assGroup->execute();
+}
+
+// TODO: second date is smaller than first + only one of the dates were given
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['generateTasks'])) {
+    $checkbox1 = isset($_POST['checkbox1']) ? 1 : 0;
+    $checkbox2 = isset($_POST['checkbox2']) ? 1 : 0;
+    $checkbox3 = isset($_POST['checkbox3']) ? 1 : 0;
+    $checkbox4 = isset($_POST['checkbox4']) ? 1 : 0;
+
+    $datePicker1 = isset($_POST['myDatePicker1']) && !empty($_POST['myDatePicker1']) ? $_POST['myDatePicker1'] : null;
+    $datePicker2 = isset($_POST['myDatePicker2']) && !empty($_POST['myDatePicker2']) ? $_POST['myDatePicker2'] : null;
+
+    if($datePicker1 && $datePicker2) {
+        $myDate1 = new DateTime($datePicker1);
+        $myDate2 = new DateTime($datePicker2);
+        if($datePicker2 < $datePicker1) {
+            $correctDate = 0;
+            echo "The second date is earlier than the first date.";
+        } else {
+            $correctDate = 1;
+        }
+    } else {
+        $correctDate = 0;
+        echo "One or both of the dates are not set.";
+    }
+
+    if ($checkbox1 && $correctDate) {
+        $dateToPost1 = $datePicker1;
+        $dateToPost2 = $datePicker2;
+    } else {
+        $dateToPost1 = null;
+        $dateToPost2 = null;
+    }
+    updateAssignmentGroup($conn, $dateToPost1, $dateToPost2, $checkbox1, 8);
+
+    if ($checkbox2 && $correctDate) {
+        $dateToPost1 = $datePicker1;
+        $dateToPost2 = $datePicker2;
+    } else {
+        $dateToPost1 = null;
+        $dateToPost2 = null;
+    }
+    updateAssignmentGroup($conn, $dateToPost1, $dateToPost2, $checkbox2, 9);
+
+    if ($checkbox3 && $correctDate) {
+        $dateToPost1 = $datePicker1;
+        $dateToPost2 = $datePicker2;
+    } else {
+        $dateToPost1 = null;
+        $dateToPost2 = null;
+    }
+    updateAssignmentGroup($conn, $dateToPost1, $dateToPost2, $checkbox3, 10);
+
+    if ($checkbox4 && $correctDate) {
+        $dateToPost1 = $datePicker1;
+        $dateToPost2 = $datePicker2;
+    } else {
+        $dateToPost1 = null;
+        $dateToPost2 = null;
+    }
+    updateAssignmentGroup($conn, $dateToPost1, $dateToPost2, $checkbox4, 11);
+    
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['definePoints'])) {
+    $blokovka1 = isset($_POST['blokovka1']) && !empty($_POST['blokovka1']) && is_numeric($_POST['blokovka1']) ? $_POST['blokovka1'] : null;
+    $blokovka2 = isset($_POST['blokovka2']) && !empty($_POST['blokovka2']) && is_numeric($_POST['blokovka2']) ? $_POST['blokovka2'] : null;
+    $odozva1 = isset($_POST['odozva1']) && !empty($_POST['odozva1']) && is_numeric($_POST['odozva1']) ? $_POST['odozva1'] : null;
+    $odozva2 = isset($_POST['odozva2']) && !empty($_POST['odozva2']) && is_numeric($_POST['odozva2']) ? $_POST['odozva2'] : null;
+
+    if ($blokovka1) {
+        updateAssignmentGroupPoints($conn, $blokovka1, 8);
+    }
+    if ($blokovka2) {
+        updateAssignmentGroupPoints($conn, $blokovka2, 9);
+    }
+    if ($odozva1) {
+        updateAssignmentGroupPoints($conn, $odozva1, 10);
+    }
+    if ($odozva2) {
+        updateAssignmentGroupPoints($conn, $odozva2, 11);
+    }
+    
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -96,104 +193,108 @@ while ($row = mysqli_fetch_assoc($studentResults)) {
                 <div class="row d-flex justify-content-center">
                     <div class="col-md-12">
                         
-                        <h3 class="text-uppercase text-center m-5">Nastavenie generovanie prikladov pre studenta</h3>
-                        <!-- <select name="selectperson" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-                            <option selected>Vyberte športovca</option>
-                            <?php
-                            // foreach($results_s as $result) {
-                                // echo '<option value="' . $result["id"] . '">' . $result["name"] . ' ' . $result["surname"] . '</option>';
-                            // }
-                            ?>
-                        </select> -->
-                        <div class="form-outline mb-4">
-                            <div class="form-outline tea">
-                                <input
-                                    type="text"
-                                    name="birthDay"
-                                    class="form-control"
-                                    id="datePicker1"
-                                    value="<?php echo $person['birth_day'] ?>"
-                                />
-                                <label for="datePicker1" class="form-label">Generovanie od</label>
-                            </div>
-                        </div>
-
-                        <div class="form-outline mb-4">
-                            <div class="form-outline tea">
+                        <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
+                            <h3 class="text-uppercase text-center m-5">Nastavenie generovanie prikladov pre studenta</h3>
+                            <!-- <select name="selectperson" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                                <option selected>Vyberte športovca</option>
+                                <?php
+                                // foreach($results_s as $result) {
+                                    // echo '<option value="' . $result["id"] . '">' . $result["name"] . ' ' . $result["surname"] . '</option>';
+                                // }
+                                ?>
+                            </select> -->
+                            <div class="form-outline mb-4">
+                                <div class="form-outline tea">
                                     <input
                                         type="text"
-                                        name="deathDay"
+                                        name="myDatePicker1"
                                         class="form-control"
-                                        id="datePicker2"
-                                        value=""
+                                        id="datePicker1"
+                                        value="<?php echo $person['birth_day'] ?>"
                                     />
-                                    <label for="datePicker2" class="form-label">Generovanie do</label>
-                            </div>
-                        </div>
-                        <div style="display: flex; justify-content: center;">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="checkbox1"/>
-                                <label class="form-check-label" for="checkbox1">Blokovka1</label>
+                                    <label for="datePicker1" class="form-label">Generovanie od</label>
+                                </div>
                             </div>
 
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="checkbox2"/>
-                                <label class="form-check-label" for="checkbox2">Blokovka2</label>
+                            <div class="form-outline mb-4">
+                                <div class="form-outline tea">
+                                        <input
+                                            type="text"
+                                            name="myDatePicker2"
+                                            class="form-control"
+                                            id="datePicker2"
+                                            value=""
+                                        />
+                                        <label for="datePicker2" class="form-label">Generovanie do</label>
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content: center;">
+                                <div class="form-check">
+                                    <input name="checkbox1" class="form-check-input" type="checkbox" value="1" id="checkbox1"/>
+                                    <label class="form-check-label" for="checkbox1">Blokovka1</label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input name="checkbox2" class="form-check-input" type="checkbox" value="1" id="checkbox2"/>
+                                    <label class="form-check-label" for="checkbox2">Blokovka2</label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input name="checkbox3" class="form-check-input" type="checkbox" value="1" id="checkbox3"/>
+                                    <label class="form-check-label" for="checkbox3">Odozva1</label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input name="checkbox4" class="form-check-input" type="checkbox" value="1" id="checkbox4"/>
+                                    <label class="form-check-label" for="checkbox4">Odozva2</label>
+                                </div>
                             </div>
 
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="checkbox3"/>
-                                <label class="form-check-label" for="checkbox3">Odozva1</label>
+                            <div class="d-flex justify-content-center mt-2">
+                                <button name="generateTasks" class="btn btn-primary btn-lg btn-block" type="submit">Nastavit</button>
                             </div>
-
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="checkbox4"/>
-                                <label class="form-check-label" for="checkbox4">Odozva2</label>
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-center mt-2">
-                            <button name="addperson" class="btn btn-primary btn-lg btn-block" type="submit">Nastavit</button>
-                        </div>
+                        </form>
                     </div>  
-                    
+                
                 </div>
                 <hr class="my-4">
                 <div class="row d-flex justify-content-center">
                     <div class="col-md-12">
-                        <h3 class="text-uppercase text-center m-5">Hodnoty príklady súborov</h3>
+                        <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
+                            <h3 class="text-uppercase text-center m-5">Hodnoty príklady súborov</h3>
 
-                        <div class="form-outline mb-4">
-                            <div class="form-outline tea">
-                                <input type="number" name="placinginput" id="blokovka1" class="form-control" value="" required/>
-                                <label class="form-label" for="blokovka1" value="">Blokovka1</label>
+                            <div class="form-outline mb-4">
+                                <div class="form-outline tea">
+                                    <input name="blokovka1" type="number" name="placinginput" id="blokovka1" class="form-control" value="" required/>
+                                    <label class="form-label" for="blokovka1" value="">Blokovka1</label>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-outline mb-4">
-                            <div class="form-outline tea">
-                                <input type="number" name="placinginput" id="blokovka2" class="form-control" value="" required/>
-                                <label class="form-label" for="blokovka2" value="">Blokovka2</label>
+                            <div class="form-outline mb-4">
+                                <div class="form-outline tea">
+                                    <input name="blokovka2" type="number" name="placinginput" id="blokovka2" class="form-control" value="" required/>
+                                    <label class="form-label" for="blokovka2" value="">Blokovka2</label>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-outline mb-4">
-                            <div class="form-outline tea">
-                                <input type="number" name="placinginput" id="odozva1" class="form-control" value="" required/>
-                                <label class="form-label" for="odozva1" value="">Odozva1</label>
+                            <div class="form-outline mb-4">
+                                <div class="form-outline tea">
+                                    <input name="odozva1" type="number" name="placinginput" id="odozva1" class="form-control" value="" required/>
+                                    <label class="form-label" for="odozva1" value="">Odozva1</label>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-outline mb-4">
-                            <div class="form-outline tea">
-                                <input type="number" name="placinginput" id="odozva2" class="form-control" value="" required/>
-                                <label class="form-label" for="odozva2" value="">Odozva2</label>
+                            <div class="form-outline mb-4">
+                                <div class="form-outline tea">
+                                    <input name="odozva2" type="number" name="placinginput" id="odozva2" class="form-control" value="" required/>
+                                    <label class="form-label" for="odozva2" value="">Odozva2</label>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="d-flex justify-content-center mt-2">
-                            <button name="addperson" class="btn btn-primary btn-lg btn-block" type="submit">Nastavit body</button>
-                        </div>
+                            <div class="d-flex justify-content-center mt-2">
+                                <button name="definePoints" class="btn btn-primary btn-lg btn-block" type="submit">Nastavit body</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
                 <hr class="my-4">
