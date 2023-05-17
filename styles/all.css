@@ -1,8 +1,8 @@
 body,html{
     height: 100vh;
     width: 100vw; 
-    background-color: #1e1c45 !important;  
-    color: whitesmoke;
+    background-color: #e0fae3 !important;  
+    color: #ac92a6;
 }
 .container {
     max-width: 500px !important;
