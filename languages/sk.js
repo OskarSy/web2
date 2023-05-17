@@ -24,6 +24,18 @@ export default {
     "EqOdozva2Task": "Vypočítajte odozvu systému popísaného diferenciálnou rovnicou :",
     "EqOdozva2Description": "na jednotkový skok, ak počiatočné podmienky sú:",
     "submit": "Odovzdať",
-    "generateEQ":"Generuj príklady"
+    "generateEQ":"Generuj príklady",
+
+    //SZABI=============================================================================
+    "genExamples": "Nastavenie generovanie príkladov pre študenta",
+    "showFrom": "Generovanie od",
+    "showTo": "Generovanie to",
+    "setUp": "Nastaviť",
+    "setUpPoints": "Nastaviť body",
+    "showTables": "Prezeranie tabuliek",
+    "showStudents": "Zobraziť študentov",
+    "showTasks": "Zobraziť príkladov",
+    "tasksPoints": "Hodnoty príklady súborov",
+    "backButton": "Naspäť"
 
 }

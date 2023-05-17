@@ -2,15 +2,15 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 require_once("../api/config.php");
-//require_once __DIR__ . "/../api/config.php";
 
-//$conn = mysqli_connect($hostname, $username, $password, $dbname);
-$query_students = "SELECT * FROM Student";
-$studentResults = mysqli_query($conn, $query_students);
-$results_s = array();
+$groupNames = "SELECT a.name FROM AssignmentGroup a;";
+$stmt_grnames = $conn->prepare($groupNames);
+$stmt_grnames->execute();
+$grresult = $stmt_grnames->get_result();
 
-while ($row = mysqli_fetch_assoc($studentResults)) {
-    $results_s[] = $row;
+$grnames = array();
+while ($row = $grresult->fetch_assoc()) {
+    $grnames[] = $row;
 }
 
 function updateAssignmentGroup($conn, $dateToPost1, $dateToPost2, $canBeUsed, $id) {
@@ -185,7 +185,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['definePoints'])) {
 </head>
 
 <body id="wrapper">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.js"></script>
         <?php require_once("../templates/navbar.php") ?>
     <section>
         <div>
@@ -194,15 +193,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['definePoints'])) {
                     <div class="col-md-12">
                         
                         <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
-                            <h3 class="text-uppercase text-center m-5">Nastavenie generovanie prikladov pre studenta</h3>
-                            <!-- <select name="selectperson" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-                                <option selected>Vyberte športovca</option>
-                                <?php
-                                // foreach($results_s as $result) {
-                                    // echo '<option value="' . $result["id"] . '">' . $result["name"] . ' ' . $result["surname"] . '</option>';
-                                // }
-                                ?>
-                            </select> -->
+                            <h3 class="text-uppercase text-center m-5" data-translate="genExamples">Nastavenie generovanie prikladov pre studenta</h3>
+
                             <div class="form-outline mb-4">
                                 <div class="form-outline tea">
                                     <input
@@ -212,7 +204,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['definePoints'])) {
                                         id="datePicker1"
                                         value="<?php echo $person['birth_day'] ?>"
                                     />
-                                    <label for="datePicker1" class="form-label">Generovanie od</label>
+                                    <label for="datePicker1" class="form-label" data-translate="showFrom" >Generovanie od</label>
                                 </div>
                             </div>
 
@@ -225,13 +217,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['definePoints'])) {
                                             id="datePicker2"
                                             value=""
                                         />
-                                        <label for="datePicker2" class="form-label">Generovanie do</label>
+                                        <label for="datePicker2" class="form-label" data-translate="showTo">Generovanie do</label>
                                 </div>
                             </div>
                             <div style="display: flex; justify-content: center;">
                                 <div class="form-check">
                                     <input name="checkbox1" class="form-check-input" type="checkbox" value="1" id="checkbox1"/>
-                                    <label class="form-check-label" for="checkbox1">Blokovka1</label>
+                                    <label class="form-check-label" for="checkbox1" >Blokovka1</label>
                                 </div>
 
                                 <div class="form-check">
@@ -251,7 +243,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['definePoints'])) {
                             </div>
 
                             <div class="d-flex justify-content-center mt-2">
-                                <button name="generateTasks" class="btn btn-primary btn-lg btn-block" type="submit">Nastavit</button>
+                                <button name="generateTasks" class="btn btn-primary btn-lg btn-block" type="submit" data-translate="setUp">Nastavit</button>
                             </div>
                         </form>
                     </div>  
@@ -261,38 +253,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['definePoints'])) {
                 <div class="row d-flex justify-content-center">
                     <div class="col-md-12">
                         <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
-                            <h3 class="text-uppercase text-center m-5">Hodnoty príklady súborov</h3>
+                            <h3 class="text-uppercase text-center m-5" data-translate="tasksPoints">Hodnoty príklady súborov</h3>
+                            
+                            <select name="selectgroup" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                                <option selected>Vyberte sadu</option>
+                                <?php
+                                foreach($grnames as $result) {
+                                    echo '<option value="' . $result["name"] . '">' . $result["name"] . '</option>';
+                                }
+                                ?>
+                            </select>
 
                             <div class="form-outline mb-4">
                                 <div class="form-outline tea">
-                                    <input name="blokovka1" type="number" name="placinginput" id="blokovka1" class="form-control" value="" required/>
-                                    <label class="form-label" for="blokovka1" value="">Blokovka1</label>
-                                </div>
-                            </div>
-
-                            <div class="form-outline mb-4">
-                                <div class="form-outline tea">
-                                    <input name="blokovka2" type="number" name="placinginput" id="blokovka2" class="form-control" value="" required/>
-                                    <label class="form-label" for="blokovka2" value="">Blokovka2</label>
-                                </div>
-                            </div>
-
-                            <div class="form-outline mb-4">
-                                <div class="form-outline tea">
-                                    <input name="odozva1" type="number" name="placinginput" id="odozva1" class="form-control" value="" required/>
-                                    <label class="form-label" for="odozva1" value="">Odozva1</label>
-                                </div>
-                            </div>
-
-                            <div class="form-outline mb-4">
-                                <div class="form-outline tea">
-                                    <input name="odozva2" type="number" name="placinginput" id="odozva2" class="form-control" value="" required/>
-                                    <label class="form-label" for="odozva2" value="">Odozva2</label>
+                                    <input name="mygroup" type="number" class="form-control" value="" required/>
+                                    <label class="form-label" for="mygroup" value=""></label>
                                 </div>
                             </div>
 
                             <div class="d-flex justify-content-center mt-2">
-                                <button name="definePoints" class="btn btn-primary btn-lg btn-block" type="submit">Nastavit body</button>
+                                <button name="definePoints" class="btn btn-primary btn-lg btn-block" type="submit" data-translate="setUpPoints">Nastavit body</button>
                             </div>
                         </form>
                     </div>
@@ -300,7 +280,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['definePoints'])) {
                 <hr class="my-4">
                 <div class="row d-flex justify-content-center">
                     <div class="col-md-12">
-                        <h3 class="text-uppercase text-center m-5">Hodnoty príklady súborov</h3>
+                        <h3 class="text-uppercase text-center m-5" data-translate="showTables">Prezeranie tabuliek</h3>
+
+                        <div class="d-flex justify-content-around mt-2">
+                            <a href="showStudents.php" class="btn btn-primary btn-lg" role="button" data-translate="showStudents">Show students</a>
+                            <a href="" class="btn btn-primary btn-lg" role="button" data-translate="showTasks">Show tasks</a>
+                        </div>
+
                     <div>
                 </div>
             </div>
@@ -327,6 +313,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['definePoints'])) {
             buttonClass: 'btn',
             format: 'yyyy-mm-dd'
         }); 
+        window.onload = function() {
+            const selectElement = document.querySelector('select[name="selectgroup"]');
+            const buttonElement = document.querySelector('button[name="definePoints"]');
+            const inputElement = document.querySelector('input[name="mygroup"]');
+            const labelElement = document.querySelector('label[for="mygroup"]');
+
+            inputElement.style.display = "none";
+            buttonElement.style.display = "none";
+
+            selectElement.addEventListener('change', function(event) {
+                if (event.target.value !== "Vyberte sadu") {
+                    inputElement.style.display = "block";
+                    buttonElement.style.display = "block";
+                    inputElement.id = event.target.value;
+                    labelElement.textContent = event.target.options[event.target.selectedIndex].text;
+                } else {
+                    inputElement.style.display = "none";
+                    buttonElement.style.display = "none";
+                    labelElement.textContent = "";
+                }
+            });
+        }
     </script>
 </body>
 

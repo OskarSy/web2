@@ -25,6 +25,19 @@ export default {
         "EqOdozva2Task": "Calculate the response of the system described by the differential equation:",
         "EqOdozva2Description": "per unit jump if the initial conditions are:",
         "submit": "Submit",
-        "generateEQ":"Generate equations"
+        "generateEQ":"Generate equations",
+
+        //SZABI=============================================================================
+        
+        "genExamples": "Set up task generations",
+        "showFrom": "Show from",
+        "showTo": "Show to",
+        "setUp": "Setup",
+        "setUpPoints": "Setup points",
+        "showTables": "Show tables",
+        "showStudents": "Show students",
+        "showTasks": "Show tasks",
+        "tasksPoints": "Task points",
+        "backButton": "Back",
 
 }
