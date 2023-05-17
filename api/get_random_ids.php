@@ -1,5 +1,5 @@
 <?php
-require 'config.php';
+require_once ('config.php');
 
 
 // Check if the session is active and retrieve the session ID

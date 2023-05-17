@@ -2,7 +2,7 @@
 if (!empty($_SESSION["id"])) {
   if ($_SESSION["role"] == 'student') {
     header("Location: https://site215.webte.fei.stuba.sk/semestralka/views/equations.php");
-  } elseif ($_SESSION["role"] == 'teacher') {
+  } else if ($_SESSION["role"] == 'teacher') {
     //teacher
   } 
 } ?>
@@ -129,9 +129,9 @@ if (!empty($_SESSION["id"])) {
         })
         .done((data) => {
           console.log(data);
-          if (data === 'student') {
+          if (data == 'student') {
             window.location.href = './views/equations.php';
-          } else if (data === 'teacher') {
+          } else if (data == 'teacher') {
             window.location.href = './views/teacher.php';
           }
         })

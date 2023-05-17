@@ -1,5 +1,9 @@
 <?php
-require 'config.php';
+require_once ('config.php');
+
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $json = file_get_contents('php://input');

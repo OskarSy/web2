@@ -1,10 +1,10 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+require_once("../api/config.php");
+//require_once __DIR__ . "/../api/config.php";
 
-require_once __DIR__ . "/../api/config.php";
-
-$conn = mysqli_connect($hostname, $username, $password, $dbname);
+//$conn = mysqli_connect($hostname, $username, $password, $dbname);
 $query_students = "SELECT * FROM Student";
 $studentResults = mysqli_query($conn, $query_students);
 $results_s = array();

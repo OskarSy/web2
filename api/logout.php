@@ -1,5 +1,5 @@
 <?php
-require 'config.php';
+require_once ('config.php');
 if (empty($_SESSION["id"])) {
     header("Location: https://site215.webte.fei.stuba.sk/semestralka");
 }

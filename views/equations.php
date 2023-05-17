@@ -1,5 +1,5 @@
 <?php
-require("../api/equationFunctionionality.php");
+require_once("../api/equationFunctionionality.php");
 
 $result = $conn->query("SELECT id,submittedAnswer FROM StudentAssignmentLink");
 
