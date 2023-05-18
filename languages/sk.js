@@ -41,6 +41,7 @@ export default {
   "showTasks": "Zobraziť príkladov",
   "tasksPoints": "Hodnoty príklady súborov",
   "backButton": "Naspäť",
+  "addPointsToAssignment": "Zadajte body",
   "studentStatsTable": "Prehladná tabuľka o študentoch",
   "nameS": "Meno",
   "surnameS": "Priezvisko",

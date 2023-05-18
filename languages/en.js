@@ -44,6 +44,7 @@ export default {
         "showTasks": "Show tasks",
         "tasksPoints": "Task points",
         "backButton": "Back",
+        "addPointsToAssignment": "Give points",
         "studentStatsTable": "Stats about students",
         "nameS": "Name",
         "surnameS": "Surname",

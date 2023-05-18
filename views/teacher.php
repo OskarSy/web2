@@ -202,7 +202,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['definePoints'])) {
                                     echo '                                
                                         <div class="form-check">
                                             <input name="' . $result["name"] . '" class="form-check-input" type="checkbox" value="1" id="' . $result["name"] . '"/>
-                                            <label class="form-check-label" for="' . $result["name"] . '" >' . $result["name"] . '</label>
+                                            <label class="form-check-label" for="' . $result["name"] . '" data-translate="addPointsToAssignment">Zadajte body</label>
                                         </div>';
                                 }
                                 ?>
