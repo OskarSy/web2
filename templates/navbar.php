@@ -19,9 +19,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="../api/logout.php">Logout</a>
                     </li>
-                    <li class="nav-item float-right">
-                        <a class="nav-link" href="../api/logout.php">AAAA</a>
-                    </li>
                 </ul>
 
             </div>

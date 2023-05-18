@@ -2,6 +2,11 @@
 
 require_once("../api/config.php");
 
+if(!isset($_SESSION["role"]) || $_SESSION["role"] !== "teacher"){
+    header("Location: ../index.php");
+    exit;
+}
+
 $quey = "SELECT s.id, s.name, s.surname, COUNT(sal.assignmentId) AS assignmentCount,
                                         COUNT(sal.submittedAnswer) AS submittedAnswerCount,
                                         SUM(sal.achievedPoints) AS totalAchievedPoints

@@ -3,6 +3,11 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 require_once("../api/config.php");
 
+if(!isset($_SESSION["role"]) || $_SESSION["role"] !== "teacher"){
+    header("Location: ../index.php");
+    exit;
+}
+
 $groupNames = "SELECT a.name FROM AssignmentGroup a;";
 $stmt_grnames = $conn->prepare($groupNames);
 $stmt_grnames->execute();
@@ -27,7 +32,6 @@ function updateAssignmentGroupPoints($conn, $name, $id) {
     $stmt_assGroup->execute();
 }
 
-// TODO: second date is smaller than first + only one of the dates were given
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['generateTasks'])) {
     $checkbox1 = isset($_POST['checkbox1']) ? 1 : 0;
     $checkbox2 = isset($_POST['checkbox2']) ? 1 : 0;
@@ -284,7 +288,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['definePoints'])) {
 
                         <div class="d-flex justify-content-around mt-2">
                             <a href="showStudents.php" class="btn btn-primary btn-lg" role="button" data-translate="showStudents">Show students</a>
-                            <a href="" class="btn btn-primary btn-lg" role="button" data-translate="showTasks">Show tasks</a>
+                            <a href="showTasks.php" class="btn btn-primary btn-lg" role="button" data-translate="showTasks">Show tasks</a>
                         </div>
 
                     <div>
