@@ -18,6 +18,22 @@ while ($row = $result->fetch_assoc()) {
     $students[] = $row;
 }
 
+// Export to CSV
+if (isset($_POST['export'])) {
+    header('Content-Encoding: UTF-8');
+    header('Content-Type: text/csv; charset=UTF-8');
+    header('Content-Disposition: attachment; filename="students.csv"');
+    echo "\xEF\xBB\xBF"; // Add BOM to ensure correct encoding in Excel
+    $output = fopen('php://output', 'w');
+    fputcsv($output, array('Meno', 'Priezvisko', 'ID', 'Vygeneroval', 'Odovzdal', 'Body'));
+
+    foreach ($students as $student) {
+        fputcsv($output, $student);
+    }
+    fclose($output);
+    exit();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -108,7 +124,11 @@ while ($row = $result->fetch_assoc()) {
                     ?>
                 </tbody>
             </table>
-        </div>
+
+            <form method="post">
+                <button type="submit" name="export" class="btn btn-primary">Export to CSV</button>
+            </form>
+        </div><br>
 
         <div class="d-flex justify-content-center mt-2">
             <a href="teacher.php" class="btn btn-primary btn-lg" role="button" data-translate="backButton">Naspať</a>
