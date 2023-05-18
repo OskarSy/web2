@@ -57,6 +57,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['selectStudent'])) {
     <link href="../styles/all.css" rel="stylesheet">
 
     <style>
+        .container {
+            max-width: 800px !important;
+        }
         .image-container {
             display: flex;
             justify-content: center;
@@ -105,31 +108,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['selectStudent'])) {
     <div class="container justify-content-center align-items-start" style="margin-top: 50px; margin-bottom: 50px; max-width: 1200px;">
         <div class="container-md">            
             
-            <h5 class="text-uppercase m-5">Prehladna tabulka o studentov</h5>
+            <h5 class="text-uppercase m-5" data-translate="generatedTasksStats">Prehladna tabulka o studentov</h5>
             
             <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <select name="selectStudent" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-                        <option selected>Vyberte studenta</option>
-                        <?php
-                        foreach($students as $result) {
-                            echo '<option value="'. $result["id"] .'">'  . $result["name"] . $result["surname"] . '</option>';
-                        }
-                        ?>
-                    </select>
-                
-                    <button type="submit" name="showTaskko" class="btn btn-primary">Ukazat</button>
+                    <div class="flex-grow-1 mr-3 w-70">
+                        <select name="selectStudent" class="form-select form-select-lg w-100" aria-label=".form-select-lg example">
+                            <option selected data-translate="pickStudent">Vyberte studenta</option>
+                            <?php
+                            foreach($students as $result) {
+                                echo '<option value="'. $result["id"] .'">'  . $result["name"] . $result["surname"] . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <button type="submit" name="showTaskko" class="btn btn-primary align-self-stretch" data-translate="showTheTasks">Ukazat</button>
                 </div>
             </form>
 
             <table class="table align-middle mb-0 bg-white">
                     <thead class="bg-light">
                         <tr>
-                        <th>Sada prikladov</th>
-                        <th>Spravny odpoved</th>
-                        <th>Odovzdal</th>
-                        <th>Body</th>
-                        <th>Spravnost</th>
+                        <th data-translate="setOfTasks">Sada prikladov</th>
+                        <th data-translate="correctAnswer">Spravny odpoved</th>
+                        <th data-translate="submittedS">Odovzdal</th>
+                        <th data-translate="pointsS">Body</th>
+                        <th data-translate="correctSubmission">Spravnost</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -165,7 +169,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['selectStudent'])) {
         </div><br>
 
         <div class="d-flex justify-content-center mt-2">
-            <a href="teacher.php" class="btn btn-primary btn-lg" role="button" data-translate="backButton">Naspať</a>
+            <a href="teacher.php" class="btn btn-primary btn-lg w-100" role="button" data-translate="backButton">Naspať</a>
         </div>
 
     </div>

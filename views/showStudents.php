@@ -54,6 +54,9 @@ if (isset($_POST['export'])) {
     <link href="../styles/all.css" rel="stylesheet">
 
     <style>
+        .container {
+            max-width: 800px !important;
+        }
         .image-container {
             display: flex;
             justify-content: center;
@@ -102,41 +105,41 @@ if (isset($_POST['export'])) {
     <div class="container justify-content-center align-items-start" style="margin-top: 50px; margin-bottom: 50px; max-width: 1200px;">
         <div class="container-md">            
             
-            <h5 class="text-uppercase m-5">Prehladna tabulka o studentov</h5>
+            <h5 class="text-uppercase m-5" data-translate="studentStatsTable">Prehladna tabulka o studentov</h5>
             <table id="myTable1" class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Meno</th>
-                        <th>Priezvisko</th>
-                        <th>ID</th>
-                        <th>Vygeneroval</th>
-                        <th>Odovzdal</th>
-                        <th>Body</th>
+                        <th data-translate="nameS">Meno</th>
+                        <th data-translate="surnameS">Priezvisko</th>
+                        <th data-translate="idS">ID</th>
+                        <th data-translate="generatedS">Vygeneroval</th>
+                        <th data-translate="submittedS">Odovzdal</th>
+                        <th data-translate="pointsS">Body</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
                     foreach($students as $student){
-                        echo "<tr>
-                                <td>" . $student["name"] . "</td>
-                                <td>" . $student["surname"] . "</td>
-                                <td>" . $student["id"] . "</td>
-                                <td>" . $student["assignmentCount"] . "</td>
-                                <td>" . $student["submittedAnswerCount"] . "</td>
-                                <td>" . $student["totalAchievedPoints"] . "</td>
-                            </tr>";
+                        echo '<tr>
+                                <td>' . $student["name"] . '</td>
+                                <td>' . $student["surname"] . '</td>
+                                <td>' . $student["id"] . '</td>
+                                <td>' . $student["assignmentCount"] . '</td>
+                                <td>' . $student["submittedAnswerCount"] . '</td>
+                                <td>' . $student["totalAchievedPoints"] . '</td>
+                            </tr>';
                     }
                     ?>
                 </tbody>
             </table>
 
             <form method="post">
-                <button type="submit" name="export" class="btn btn-primary">Export to CSV</button>
+                <button type="submit" name="export" class="btn btn-primary" data-translate="exportko">Export to CSV</button>
             </form>
         </div><br>
 
         <div class="d-flex justify-content-center mt-2">
-            <a href="teacher.php" class="btn btn-primary btn-lg" role="button" data-translate="backButton">Naspať</a>
+            <a href="teacher.php" class="btn btn-primary btn-lg w-100" role="button" data-translate="backButton">Naspať</a>
         </div>
 
     </div>
@@ -152,7 +155,13 @@ if (isset($_POST['export'])) {
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('#myTable1').DataTable();
+            $('#myTable1').DataTable({
+                "searching": false,
+                "paging": false,
+                "lengthChange": false,
+                "info": false,
+                "pageLength": 1000000
+            });
         });
     </script>
 </body>
