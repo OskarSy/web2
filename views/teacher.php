@@ -251,7 +251,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['definePoints'])) {
                         <div class="d-flex justify-content-around mt-2">
                             <a href="showStudents.php" class="btn btn-primary btn-lg" role="button" data-translate="showStudents">Show students</a>
                             <a href="showTasks.php" class="btn btn-primary btn-lg" role="button" data-translate="showTasks">Show tasks</a>
-                        </div>
+                        </div><br><br>
 
                     <div>
                 </div>
