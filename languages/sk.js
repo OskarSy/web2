@@ -40,6 +40,21 @@ export default {
   "showStudents": "Zobraziť študentov",
   "showTasks": "Zobraziť príkladov",
   "tasksPoints": "Hodnoty príklady súborov",
-  "backButton": "Naspäť"
+  "backButton": "Naspäť",
+  "addPointsToAssignment": "Zadajte body",
+  "studentStatsTable": "Prehladná tabuľka o študentoch",
+  "nameS": "Meno",
+  "surnameS": "Priezvisko",
+  "idS": "ID",
+  "generatedS": "Vygeneroval",
+  "submittedS": "Odovzdal",
+  "pointsS": "Body",
+  "exportko": "Exportovať do CVS",
+  "generatedTasksStats": "Zobrazenie vygenerovanych uloh",
+  "showTheTasks": "Ukázať",
+  "pickStudent": "Vyberte študenta",
+  "setOfTasks": "Sada príkladov",
+  "correctAnswer": "Správny odpoveď",
+  "correctSubmission": "Správnosť",
 
 }

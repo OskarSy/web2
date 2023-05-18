@@ -293,7 +293,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['definePoints'])) {
                     inputElement.style.display = "block";
                     buttonElement.style.display = "block";
                     inputElement.id = event.target.value;
-                    labelElement.textContent = event.target.options[event.target.selectedIndex].text;
+                    labelElement.textContent = "";
                 } else {
                     inputElement.style.display = "none";
                     buttonElement.style.display = "none";
