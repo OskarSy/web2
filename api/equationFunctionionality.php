@@ -54,52 +54,28 @@ function generateEquation($id)
         $systemDescriptions = $buffer[0];
     }
 
-
-
     if (isBlokovka($fileName)) {
-        $blokovkaLogic = '
-<div id="task" class="text-center">'
-
-
-            . '
-    <p data-translate="EqTask">' . $task . '</p>
-    <p>' . "\(" . $taskSymbols . "\)" . '</p>
-    <p data-translate="EqDescription">' . $systemDescriptions . '</p>
-    <div class="image-container">
-        <img src="' . $imagePath . '" alt="' . $systemDescriptions . '" class="img-fluid">
-    </div>'
-            . '
-</div>
-<div id="solution" style="display: none;">'
-            . '
-    <p>' . "\(" . $solutions . "\)" . '</p>'
-            . '
-</div>
-<button id="toggleSolution" onclick="toggleSolution()" data-translate="solution">Show solution</button>';
+        $blokovkaLogic = '<div id="task" class="text-center">'
+            . '<p data-translate="EqTask">' . $task . '</p><p>' . "\(" . $taskSymbols . "\)"
+            .'</p><p data-translate="EqDescription">' . $systemDescriptions
+            . '</p><div class="image-container"><img src="'
+            . $imagePath . '" alt="' . $systemDescriptions
+            . '" class="img-fluid"></div>';        
     } else {
-        $blokovkaLogic = '
-<div id="task" class="text-center">';
+        $blokovkaLogic = '<div id="task" class="text-center">';
         if (!isOdozva1($fileName)) {
             $blokovkaLogic .= '
-    <p data-translate="EqOdozva2Task">' . $task . '</p>
-    <p>' . "\(" . $taskSymbols . "\)" . '</p>
-    <p data-translate="EqOdozva2Description">' . $systemDescriptions . '</p>
-    <p>' . "\(" . $descSymbols . "\)" . '</p>';
+            <p data-translate="EqOdozva2Task">' . $task . 
+            '</p><p>' . "\(" . $taskSymbols . "\)" . 
+            '</p><p data-translate="EqOdozva2Description">' . $systemDescriptions . 
+            '</p><p>' . "\(" . $descSymbols . "\)" . '</p>';
         } else {
             $blokovkaLogic .= '
         <p data-translate="EqOdozvaTask">' . $task . '</p>
         <p>' . "\(" . $taskSymbols . "\)" . '</p>';
         }
 
-        $blokovkaLogic .= '
-</div>
-<div id="solution" style="display: none;">';
-        $blokovkaLogic .= '
-    <p>' . "\(" . $solutions . "\)" . '</p>';
-
-        $blokovkaLogic .= '
-</div>
-<button id="toggleSolution" onclick="toggleSolution()" data-translate="solution">Show solution</button>';
+        
     }
     // echo $solutions . '<br>'; //ECHOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 

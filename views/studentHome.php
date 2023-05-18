@@ -1,18 +1,19 @@
 <?php
-require_once("../api/config.php");
 
+require_once('../api/config.php');
+session_start();
 if (empty($_SESSION["id"])) {
     header("Location: https://site215.webte.fei.stuba.sk/semestralka/");
 }
 
 
-// Update the canBeUsed attribute in AssignmentGroup based on the current date
 $formattedDate = date('Y-m-d');
-$canBeUsed_q = "UPDATE AssignmentGroup SET canBeUsed = 0 WHERE ? BETWEEN canBeUsedFrom AND canBeUsedTo";
-$stmt = $conn->prepare($canBeUsed_q);
+$stmt = $conn->prepare("UPDATE AssignmentGroup SET canBeUsed = 1 WHERE ? BETWEEN canBeUsedFrom AND canBeUsedTo");
 $stmt->bind_param("s", $formattedDate);
 $stmt->execute();
-
+$stmt = $conn->prepare("UPDATE AssignmentGroup SET canBeUsed = 0 WHERE ? NOT BETWEEN canBeUsedFrom AND canBeUsedTo");
+$stmt->bind_param("s", $formattedDate);
+$stmt->execute();
 
 $result = $conn->query("SELECT a.id
                         FROM Assignments a
@@ -47,32 +48,55 @@ $_SESSION['generationMax'] = $generationMax = count($ids);
 </head>
 
 <body>
-    <div class="container-fluid wrapper">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <?php echo $_SESSION['email'] ?>
+                </a>
+                <button class="btn btn-sm btn-secondary languageSwitcher me-1" data-language="sk">Slovenčina</button>
+                <button class="btn btn-sm btn-secondary languageSwitcher" data-language="en">English</button>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../api/logout.php">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container-fluid" id="wrapper">
         <div class="row">
-            <div class="col-10 mx-auto">
-                <button id="togglegeneration" onclick="toggleGeneration()" data-translate="generateEQ">Generate equations</button>
-                <input type="number" id="inputValue" min="1" max="<?php echo $generationMax ?>">
+            <div class="col-10 mx-auto mt-4">
+                <div class="mb-4 mx-auto d-flex flex-column col-12 col-md-3 col-lg-2">
+                    <input class="form-control my-2" type="number" id="inputValue" min="1" max="<?php echo $generationMax ?>">
+                    <button type="button" class="btn btn-primary" id="toggleGeneration" data-translate="generateEQ">Generate equations</button>
+                </div>
                 <div id="card-container"></div>
             </div>
         </div>
     </div>
-    <div class="modal text-dark" tabindex="-1" id="myModal">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" data-translate="loginError">loginError</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <span id="modalError" data-translate="emptyGenerationCount"></span>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
     <script>
+        $('#toggleGeneration').prop('disabled', true);
+        $('#inputValue').change(input => {
+            console.log(input);
+            if (input.target.value == '') {
+                $('#toggleGeneration').prop('disabled', true);
+            } else {
+                $('#toggleGeneration').prop('disabled', false);
+            }
+        });
+        $('#toggleGeneration').click(() => {
+            toggleGeneration();
+        });
+
         function generateCards(elements) {
             console.log(elements);
             const container = document.getElementById('card-container');
@@ -87,13 +111,11 @@ $_SESSION['generationMax'] = $generationMax = count($ids);
                 card.classList.add('mb-4'); // Add some margin at the bottom of each card
 
                 card.innerHTML = `
-      <div class="card" data-id="${element.id}">
-        <div class="card-body">
-        ${element.equation}
-        </div>
-      </div>
-    `;
-
+                    <div class="card h-100" data-id="${element.id}">
+                        <div class="card-body">
+                        ${element.equation}
+                        </div>
+                    </div>`;
                 row.appendChild(card);
                 if ((index + 1) % 3 === 0 && window.innerWidth > 768) {
                     container.appendChild(row);
@@ -103,29 +125,34 @@ $_SESSION['generationMax'] = $generationMax = count($ids);
             });
 
             container.appendChild(row);
-        }        
+            renderEquations();
+            $('.card').click(card => {
+                window.location.href = "./equations.php?equationId=" + $(card.target).closest('.card').data('id');
+            });
+        }
 
         function toggleGeneration() {
-            var generationCount = document.getElementById("inputValue").value;
-            if (generationCount > 0) {
-                $.ajax({
-                    url: '../api/get_random_ids.php',
-                    type: 'POST',
-                    contentType: "application/json",
-                    data: JSON.stringify({
-                        generationCount: generationCount
-                    })
-                }).done(response => {         
-                    console.log(JSON.parse(response));           
-                    // generateCards(JSON.parse(response));
-                }).fail((xhr, status, error) => {
-                    console.error(error);
-                });
-            } else {
-                modal.show();
-            }
+
+            var generationCount = $('#inputValue').val();
+
+            $.ajax({
+                url: '../api/get_random_ids.php',
+                type: 'POST',
+                contentType: "application/json",
+                data: JSON.stringify({
+                    generationCount: generationCount
+                })
+            }).done(response => {
+                console.log(response);
+                console.log(JSON.parse(response));
+                generateCards(JSON.parse(response));
+            }).fail((xhr, status, error) => {
+                console.error(error);
+            });
         }
     </script>
+    <script src="../scripts/global.js"></script>
+    <script type="module" src="../languages/languageSwitching.js"></script>
 </body>
 
 </html>

@@ -2,8 +2,6 @@
 require_once('config.php');
 require_once('equationFunctionionality.php');
 
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $json = file_get_contents('php://input');
@@ -35,8 +33,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   $_SESSION['generationIndex'] = $generationIndex;
 
-  $randomKeys = array_rand($availableIds, $amountToGenerate);
-  var_dump( $randomKeys );
+  
+  if($amountToGenerate==1){
+    $randomKeys[] = array_rand($availableIds, $amountToGenerate);
+  }
+  else{
+    $randomKeys = array_rand($availableIds, $amountToGenerate);
+  }
+ 
   if (count($availableIds) >= $amountToGenerate) {
     foreach ($randomKeys as $key) {
       $stmt = $conn->prepare('INSERT INTO StudentAssignmentLink (assignmentId, studentId,generationIndex) VALUES (?, ?, ?)');
@@ -49,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $generatedEquations[] = array('id' => $availableIds[$key], 'equation' => generateEquation($availableIds[$key]));
   }
   $json = json_encode($generatedEquations);
-
   echo $json;
   exit();
 }

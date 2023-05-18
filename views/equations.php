@@ -1,31 +1,18 @@
 <?php
+require_once "../api/config.php";
 require_once("../api/equationFunctionionality.php");
 
 if (empty($_SESSION["id"])) {
     header("Location: https://site215.webte.fei.stuba.sk/semestralka/");
 }
+if (empty($_GET['equationId'])){
+    header("Location: https://site215.webte.fei.stuba.sk/semestralka/views/studentHome.php");
+} 
 $generationIndex = $_SESSION['generationIndex'];
 $studentId = $_SESSION['studentId'];
 $result = $conn->query("SELECT id,submittedAnswer FROM StudentAssignmentLink WHERE generationIndex='$generationIndex' and studentId='$studentId'");
 
 $sidebarItems = array();
-
-if ($result->num_rows > 0) {
-    $i = 0;
-    while ($row = $result->fetch_assoc()) {
-        $assignmentId = $row['id'];
-        $url = "https://site215.webte.fei.stuba.sk/semestralka/views/equations.php?i=$i";
-        $sidebarItems[$i] = $url;
-
-        $i++;
-    }
-}
-
-echo ($studentId);
-// Use the $sidebarItems array as needed
-foreach ($sidebarItems as $assignmentId => $url) {
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -56,30 +43,6 @@ foreach ($sidebarItems as $assignmentId => $url) {
             width: 400px;
             height: 200px;
         }
-
-        .sidebar {
-            width: 200px;
-            background-color: #f0f0f0;
-            padding: 10px;
-        }
-
-        .sidebar ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .sidebar li {
-            margin-bottom: 5px;
-        }
-
-        .sidebar a {
-            display: block;
-            padding: 5px;
-            background-color: #ddd;
-            text-decoration: none;
-            color: #333;
-        }
     </style>
 </head>
 
@@ -98,15 +61,12 @@ foreach ($sidebarItems as $assignmentId => $url) {
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Home</a>
-                        </li>
+                        <li class="nav-item float-right">
+                            <a class="nav-link" href="./studentHome.php">Home</a>
+                        </li>                       
                         <li class="nav-item">
                             <a class="nav-link" href="../api/logout.php">Logout</a>
-                        </li>
-                        <li class="nav-item float-right">
-                            <a class="nav-link" href="../api/logout.php">AAAA</a>
-                        </li>
+                        </li>                       
                     </ul>
 
                 </div>
@@ -114,28 +74,12 @@ foreach ($sidebarItems as $assignmentId => $url) {
         </nav>
     </header>
     <div class="container-fluid">
-        <?php if (isset($_GET['i'])) { ?>
-            <?php
-            echo $blokovkaLogic;
-
-            ?>
-            <div id="mathquill-editor"></div>
-            <button id="submit-btn" data-translate="submit">Submit</button>
-    </div>
-    <div class="sidebar">
-        <ul>
-            <?php foreach ($sidebarItems as $label => $url) { ?>
-                <li><a href="<?php echo $url; ?>"><?php echo $label; ?></a></li>
-            <?php } ?>
-        </ul>
-    </div>
-<?php } else {
-
-            echo ($generateButton);
-            echo ($generateInputBox);
-        } 
-?>
-
+        <?php             
+            echo generateEquation($_GET['equationId']);
+        ?>
+        <div id="mathquill-editor"></div>
+        <button id="submit-btn" data-translate="submit">Submit</button>
+    </div>   
 <script type="text/javascript">
     $(document).ready(function() {
         var MQ = MathQuill.getInterface(2);
@@ -166,19 +110,11 @@ foreach ($sidebarItems as $assignmentId => $url) {
 
         renderEquations();
     });
-    function renderEquations() {
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('task')]);
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('solution')]);
-    }
-    function toggleSolution() {
-        var solutionDiv = document.getElementById("solution");
-        if (solutionDiv.style.display === "none") {
-            solutionDiv.style.display = "block";
-        } else {
-            solutionDiv.style.display = "none";
-        }
-    }
+   
+  
 </script>
+<script src="../scripts/global.js"></script>
+
 <script type="module" src="../languages/languageSwitching.js"></script>
 </body>
 
