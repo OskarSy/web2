@@ -57,6 +57,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['selectStudent'])) {
     <link href="../styles/all.css" rel="stylesheet">
 
     <style>
+        body,html{
+            height: 100vh;
+            width: 100vw; 
+            background-color: #e0fae3 !important;  
+            color: #ac92a6;
+        }
         .container {
             max-width: 800px !important;
         }
