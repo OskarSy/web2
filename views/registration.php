@@ -1,10 +1,10 @@
 <?php
-if (!empty($_SESSION["id"])) {
+if (isset($_SESSION["id"])) {
   if ($_SESSION["role"] == 'student') {
     header("Location: https://site215.webte.fei.stuba.sk/semestralka/views/equations.php");
-  } elseif ($_SESSION["role"] == 'teacher') {
-    //teacher
-  }
+  } else if ($_SESSION["role"] == 'teacher') {
+    header("Location: https://site215.webte.fei.stuba.sk/semestralka/views/teachers.php");
+  } 
 } ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -122,7 +122,7 @@ if (!empty($_SESSION["id"])) {
     let email = $('#email').val();
     let password = $('#password').val();
     let invalidFields = [];
-    const regex = /^[A-Za-z]+([ -.]?[A-Za-z]+)*$/;
+    const regex = /^[A-Za-z.-]+([ -.]?[A-Za-z.-]+)*$/;
     if (!regex.test(name)) {
       invalidFields.push("nameError");
     } else {
@@ -166,7 +166,7 @@ if (!empty($_SESSION["id"])) {
             window.location.href = './equations.php';
           }
           else if(data === 'teacher') {
-           //teacher
+            window.location.href = './teacher.php';
           }
         })
         .fail((error) => {

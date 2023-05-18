@@ -1,8 +1,12 @@
 <?php
 require_once("../api/equationFunctionionality.php");
-$userIndex=$_SESSION['userIndex'];
-$studentId=$_SESSION['studentId'];
-$result = $conn->query("SELECT id,submittedAnswer FROM StudentAssignmentLink WHERE userIndex='$userIndex' and studentId='$studentId'");
+
+if (empty($_SESSION["id"])) {
+    header("Location: https://site215.webte.fei.stuba.sk/semestralka/");
+}
+$generationIndex = $_SESSION['generationIndex'];
+$studentId = $_SESSION['studentId'];
+$result = $conn->query("SELECT id,submittedAnswer FROM StudentAssignmentLink WHERE generationIndex='$generationIndex' and studentId='$studentId'");
 
 $sidebarItems = array();
 
@@ -14,11 +18,10 @@ if ($result->num_rows > 0) {
         $sidebarItems[$i] = $url;
 
         $i++;
-
     }
 }
 
-echo($studentId);
+echo ($studentId);
 // Use the $sidebarItems array as needed
 foreach ($sidebarItems as $assignmentId => $url) {
 }
@@ -32,12 +35,9 @@ foreach ($sidebarItems as $assignmentId => $url) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
-        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
     <link href="../styles/all.css" rel="stylesheet">
 
     <style>
@@ -93,9 +93,7 @@ foreach ($sidebarItems as $assignmentId => $url) {
                 </a>
                 <button class="btn btn-sm btn-secondary languageSwitcher me-1" data-language="sk">Slovenčina</button>
                 <button class="btn btn-sm btn-secondary languageSwitcher" data-language="en">English</button>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -123,104 +121,65 @@ foreach ($sidebarItems as $assignmentId => $url) {
             ?>
             <div id="mathquill-editor"></div>
             <button id="submit-btn" data-translate="submit">Submit</button>
-        </div>
-        <div class="sidebar">
-            <ul>
-                <?php foreach ($sidebarItems as $label => $url) { ?>
-                    <li><a href="<?php echo $url; ?>"><?php echo $label; ?></a></li>
-                <?php } ?>
-            </ul>
-        </div>
-    <?php } else {
+    </div>
+    <div class="sidebar">
+        <ul>
+            <?php foreach ($sidebarItems as $label => $url) { ?>
+                <li><a href="<?php echo $url; ?>"><?php echo $label; ?></a></li>
+            <?php } ?>
+        </ul>
+    </div>
+<?php } else {
 
             echo ($generateButton);
             echo ($generateInputBox);
+        } 
+?>
 
-        } ?>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            var MQ = MathQuill.getInterface(2);
+<script type="text/javascript">
+    $(document).ready(function() {
+        var MQ = MathQuill.getInterface(2);
+        var mathField = MQ.MathField(document.getElementById('mathquill-editor'), {
+            handlers: {
+                edit: function() {
 
-            var mathField = MQ.MathField(document.getElementById('mathquill-editor'), {
-                handlers: {
-                    edit: function () {
-                        // Perform any custom logic when the content of the MathQuill editor changes
-                    }
-                },
-                restrictMismatchedBrackets: true
-            });
-
-            // Add event listener to the submit button
-            $('#submit-btn').on('click', function () {
-                var userAnswer = mathField.latex();
-
-                $.ajax({
-                    url: '../api/submitAnswer.php',
-                    type: 'POST',
-                    data: { submittedAnswer: userAnswer },
-                    success: function (response) {
-                        console.log('Assignment ID:', response.assignmentId);
-                        console.log('Submitted Answer:', response.submittedAnswer);
-                        console.log('Student id:', response.studentId);
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(error);
-                    }
-                });
-            });
-
-
-
+                }
+            },
+            restrictMismatchedBrackets: true
         });
-        // Function to render the equations using MathJax
-        function renderEquations() {
-            MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('task')]);
-            MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('solution')]);
+        $('#submit-btn').on('click', function() {
+            var userAnswer = mathField.latex();
+            $.ajax({
+                url: '../api/submitAnswer.php',
+                type: 'POST',
+                data: {
+                    submittedAnswer: userAnswer
+                }
+            }).done(response => {
+                console.log('Assignment ID:', response.assignmentId);
+                console.log('Submitted Answer:', response.submittedAnswer);
+                console.log('Student id:', response.studentId);
+            }).fail((xhr, status, error) => {
+                console.error(error);
+            });
+        });
+
+        renderEquations();
+    });
+    function renderEquations() {
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('task')]);
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('solution')]);
+    }
+    function toggleSolution() {
+        var solutionDiv = document.getElementById("solution");
+        if (solutionDiv.style.display === "none") {
+            solutionDiv.style.display = "block";
+        } else {
+            solutionDiv.style.display = "none";
         }
-
-        function toggleSolution() {
-            var solutionDiv = document.getElementById("solution");
-            if (solutionDiv.style.display === "none") {
-                solutionDiv.style.display = "block";
-            } else {
-                solutionDiv.style.display = "none";
-            }
-        }
-        function toggleGeneration() {
-            // Get the input value
-            var inputValue = document.getElementById("inputValue").value;
-
-            if (inputValue > 0 || inputValue === "") {
-                // Create a FormData object and append the inputValue
-                var formData = new FormData();
-                formData.append("inputValue", inputValue);
-
-                // Make an AJAX request to the PHP file with the session ID and inputValue
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "../api/get_random_ids.php", true);
-
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        // Handle the response from the PHP file
-                        var response = xhr.responseText;
-                        // Perform any necessary actions with the response
-                        console.log(response);
-                    }
-                };
-
-                xhr.send(formData);
-
-                location.href = "https://site215.webte.fei.stuba.sk/semestralka/views/equations.php?i=0";
-            } else {
-                alert("Cannot generate " + inputValue + " number of equations");
-            }
-        }
-
-
-
-        window.addEventListener('load', renderEquations);
-    </script>
-    <script type="module" src="../languages/languageSwitching.js"></script>
+    }
+</script>
+<script type="module" src="../languages/languageSwitching.js"></script>
 </body>
 
 </html>

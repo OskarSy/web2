@@ -31,8 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $row = $result->fetch_assoc();
                 $studentId = $row['id'];
                 $_SESSION['studentId'] = $studentId;
-            }
-            
+            }           
 
 
             http_response_code(200);

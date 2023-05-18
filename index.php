@@ -1,9 +1,9 @@
 <?php
-if (!empty($_SESSION["id"])) {
+if (isset($_SESSION["id"])) {
   if ($_SESSION["role"] == 'student') {
     header("Location: https://site215.webte.fei.stuba.sk/semestralka/views/equations.php");
   } else if ($_SESSION["role"] == 'teacher') {
-    //teacher
+    header("Location: https://site215.webte.fei.stuba.sk/semestralka/views/teachers.php");
   } 
 } ?>
 <!DOCTYPE html>
@@ -59,7 +59,7 @@ if (!empty($_SESSION["id"])) {
       <div class="form-group mb-3">
         <label class="form-label" for="password" data-translate="password">Heslo</label>
         <input type="password" id="password" class="form-control form-control-lg" />
-        <div class="invalid-feedback ms-2" id="passwordError" data-translate="passwordError">
+        <div class="invalid-feedback ms-2" id="passwordError" data-translate="passwordError2">
           //password
         </div>
       </div>
@@ -130,7 +130,7 @@ if (!empty($_SESSION["id"])) {
         .done((data) => {
           console.log(data);
           if (data == 'student') {
-            window.location.href = './views/equations.php';
+            window.location.href = './views/studentHome.php';
           } else if (data == 'teacher') {
             window.location.href = './views/teacher.php';
           }

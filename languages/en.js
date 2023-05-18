@@ -1,11 +1,15 @@
 export default {
+         //JAKUP=============================================================================
         "login": "Log in",
         "loginPage": "Log in",
         "registration": "Registration",
         "email": "Email",
-        "emailError": "It must contain at least 2 characters for each group (2@2.2).",
+        "emailError": "Email must contain at least 2 characters for each group (2@2.2).",
+        "nameError":'Name must contain only letters and . or -',
+        "surnameError":'Surname must contain only letters and . or -',
         "password": "Password",
-        "passwordError": "Must contain 3 numbers, 2 capital letters, and have a length of at least 8 ASCII characters",
+        "passwordError": "Password must contain 3 numbers, 2 capital letters, and have a length of at least 8 ASCII characters",
+        "passwordError2":"Sorry your password must contain at least 8 characters upper and lower case letter a symbol or number a hieroglyph a haiku a musical note and a drop of unicorn blood",
         "noAccountYet": "Don't have an account yet?",
         "register": "Register",
         "wrongPassword": "Wrong password",
@@ -16,7 +20,7 @@ export default {
         "student": "Student",
         "teacher": "Teacher",
 
-        //JAKUP=============================================================================
+        //Oskar=============================================================================
 
         "solution": "Show solution",
         "EqTask": "Find the transfer function:",
@@ -26,6 +30,7 @@ export default {
         "EqOdozva2Description": "per unit jump if the initial conditions are:",
         "submit": "Submit",
         "generateEQ":"Generate equations",
+        "emptyGenerationCount":"",
 
         //SZABI=============================================================================
         
