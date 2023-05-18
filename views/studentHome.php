@@ -4,6 +4,16 @@ require_once("../api/config.php");
 if (empty($_SESSION["id"])) {
     header("Location: https://site215.webte.fei.stuba.sk/semestralka/");
 }
+
+
+// Update the canBeUsed attribute in AssignmentGroup based on the current date
+$formattedDate = date('Y-m-d');
+$canBeUsed_q = "UPDATE AssignmentGroup SET canBeUsed = 0 WHERE ? BETWEEN canBeUsedFrom AND canBeUsedTo";
+$stmt = $conn->prepare($canBeUsed_q);
+$stmt->bind_param("s", $formattedDate);
+$stmt->execute();
+
+
 $result = $conn->query("SELECT a.id
                         FROM Assignments a
                         INNER JOIN AssignmentGroup ag ON a.groupId = ag.id
