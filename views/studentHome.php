@@ -8,6 +8,7 @@ if (empty($_SESSION["id"])) {
 }
 
 
+
 if (isset($_SESSION['generationIndex'])) {
     $generationIndex = $_SESSION['generationIndex'];
     $availableIds = $_SESSION['availableEquations'];
@@ -16,6 +17,7 @@ if (isset($_SESSION['generationIndex'])) {
   foreach ($randomKeys as $key) {
     $generatedEquations[] = array('id' => $availableIds[$key], 'equation' => generateEquation($availableIds[$key]));
   }
+
 }
 
 

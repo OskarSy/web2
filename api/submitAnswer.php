@@ -13,20 +13,26 @@ if (!$sessionId) {
 
 $studentId=$_SESSION["studentId"];
 
-$assignmentId = $_SESSION['currentEquation'];
+$assignmentId =  $_POST['submittedId'];
 $submittedAnswer = $_POST['submittedAnswer']; 
+
+$stmt = $conn->prepare("SELECT submittedAnswer FROM StudentAssignmentLink WHERE studentId = ? AND assignmentId = ?");
+$stmt->bind_param('ss', $studentId, $assignmentId);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $submittedAnswerCheck = $row['submittedAnswer'];
+}
 
 $stmt = $conn->prepare("UPDATE StudentAssignmentLink SET submittedAnswer = ? WHERE studentId = ? AND assignmentId = ?");
 $stmt->bind_param('sss', $submittedAnswer, $studentId, $assignmentId);
 $stmt->execute();
 
-$response = [
-    'assignmentId' => $assignmentId,
-    'submittedAnswer' => $submittedAnswer,
-    'studentId' => $studentId
-];
-
-// Send the response as JSON
-header('Content-Type: application/json');
-echo json_encode($response);
+if($submittedAnswerCheck==null){
+$stmt = $conn->prepare("UPDATE Student SET submittedCount = submittedCount + 1 WHERE id = ?");
+$stmt->bind_param('s', $studentId);
+$stmt->execute();
+}
 ?>
