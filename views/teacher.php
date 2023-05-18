@@ -202,7 +202,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['definePoints'])) {
                                     echo '                                
                                         <div class="form-check">
                                             <input name="' . $result["name"] . '" class="form-check-input" type="checkbox" value="1" id="' . $result["name"] . '"/>
-                                            <label class="form-check-label" for="' . $result["name"] . '" data-translate="addPointsToAssignment">Zadajte body</label>
+                                            <label class="form-check-label" for="' . $result["name"] . '" >' . $result["name"] . '</label>
                                         </div>';
                                 }
                                 ?>
@@ -293,7 +293,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['definePoints'])) {
                     inputElement.style.display = "block";
                     buttonElement.style.display = "block";
                     inputElement.id = event.target.value;
-                    labelElement.textContent = event.target.options[event.target.selectedIndex].text;
+                    labelElement.textContent = "";
                 } else {
                     inputElement.style.display = "none";
                     buttonElement.style.display = "none";
