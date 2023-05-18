@@ -52,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   foreach ($randomKeys as $key) {
     $generatedEquations[] = array('id' => $availableIds[$key], 'equation' => generateEquation($availableIds[$key]));
   }
+  $_SESSION['currentKeys']=$randomKeys;
   $json = json_encode($generatedEquations);
   echo $json;
   exit();

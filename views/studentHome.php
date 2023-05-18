@@ -1,10 +1,23 @@
 <?php
 
 require_once('../api/config.php');
+require_once('../api/equationFunctionionality.php');
 session_start();
 if (empty($_SESSION["id"])) {
     header("Location: https://site215.webte.fei.stuba.sk/semestralka/");
 }
+
+
+if (isset($_SESSION['generationIndex'])) {
+    $generationIndex = $_SESSION['generationIndex'];
+    $availableIds = $_SESSION['availableEquations'];
+    $randomKeys=$_SESSION['currentKeys'];
+    $generatedEquations = array();
+  foreach ($randomKeys as $key) {
+    $generatedEquations[] = array('id' => $availableIds[$key], 'equation' => generateEquation($availableIds[$key]));
+  }
+}
+
 
 
 $formattedDate = date('Y-m-d');
@@ -40,9 +53,12 @@ $_SESSION['generationMax'] = $generationMax = count($ids);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mathquill/0.10.1/mathquill.min.css">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
     <link href="../styles/all.css" rel="stylesheet">
     <title>Home</title>
 </head>
@@ -56,7 +72,9 @@ $_SESSION['generationMax'] = $generationMax = count($ids);
                 </a>
                 <button class="btn btn-sm btn-secondary languageSwitcher me-1" data-language="sk">Slovenčina</button>
                 <button class="btn btn-sm btn-secondary languageSwitcher" data-language="en">English</button>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -76,8 +94,10 @@ $_SESSION['generationMax'] = $generationMax = count($ids);
         <div class="row">
             <div class="col-10 mx-auto mt-4">
                 <div class="mb-4 mx-auto d-flex flex-column col-12 col-md-3 col-lg-2">
-                    <input class="form-control my-2" type="number" id="inputValue" min="1" max="<?php echo $generationMax ?>">
-                    <button type="button" class="btn btn-primary" id="toggleGeneration" data-translate="generateEQ">Generate equations</button>
+                    <input class="form-control my-2" type="number" id="inputValue" min="1"
+                        max="<?php echo $generationMax ?>">
+                    <button type="button" class="btn btn-primary" id="toggleGeneration"
+                        data-translate="generateEQ">Generate equations</button>
                 </div>
                 <div id="card-container"></div>
             </div>
@@ -96,6 +116,12 @@ $_SESSION['generationMax'] = $generationMax = count($ids);
         $('#toggleGeneration').click(() => {
             toggleGeneration();
         });
+        <?php
+        if (isset($_SESSION['generationIndex'])) {
+            echo "generateCards(" . json_encode($generatedEquations) . ");"; // Call the JavaScript function and pass the JSON-encoded data
+        }
+        ?>
+
 
         function generateCards(elements) {
             console.log(elements);
@@ -111,11 +137,21 @@ $_SESSION['generationMax'] = $generationMax = count($ids);
                 card.classList.add('mb-4'); // Add some margin at the bottom of each card
 
                 card.innerHTML = `
-                    <div class="card h-100" data-id="${element.id}">
-                        <div class="card-body">
-                        ${element.equation}
-                        </div>
-                    </div>`;
+      <div class="card h-100" data-id="${element.id}">
+        <div class="card-body">
+          ${element.equation}
+        </div>
+      </div>`;
+
+                // Add hover effect
+                card.addEventListener('mouseenter', function () {
+                    card.classList.add('highlight');
+                });
+
+                card.addEventListener('mouseleave', function () {
+                    card.classList.remove('highlight');
+                });
+
                 row.appendChild(card);
                 if ((index + 1) % 3 === 0 && window.innerWidth > 768) {
                     container.appendChild(row);
@@ -125,12 +161,14 @@ $_SESSION['generationMax'] = $generationMax = count($ids);
             });
 
             container.appendChild(row);
-            renderEquations();
-            $('.card').click(card => {
-                window.location.href = "./equations.php?equationId=" + $(card.target).closest('.card').data('id');
-            });
+            <?php
+            if (!isset($_SESSION['generationIndex'])) {
+                echo ("renderEquations();");
+            } ?>
+                $('.card').click(card => {
+                    window.location.href = "./equations.php?equationId=" + $(card.target).closest('.card').data('id');
+                });
         }
-
         function toggleGeneration() {
 
             var generationCount = $('#inputValue').val();
@@ -146,6 +184,7 @@ $_SESSION['generationMax'] = $generationMax = count($ids);
                 console.log(response);
                 console.log(JSON.parse(response));
                 generateCards(JSON.parse(response));
+                $('#inputValue').val(null);
             }).fail((xhr, status, error) => {
                 console.error(error);
             });

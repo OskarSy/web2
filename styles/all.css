@@ -7,3 +7,13 @@ body,html{
 .container {
     max-width: 500px !important;
   }
+
+  .highlight {
+    background-color: yellow;
+    transition: background-color 0.3s ease;
+  }
+  
+  .highlight:hover {
+    background-color: gold;
+  }
+  
