@@ -89,6 +89,8 @@ $_SESSION['generationMax'] = $generationMax = count($ids);
                         </li>
                     </ul>
                 </div>
+                
+                
             </div>
         </nav>
     </header>
@@ -104,7 +106,8 @@ $_SESSION['generationMax'] = $generationMax = count($ids);
                 <div id="card-container"></div>
             </div>
         </div>
-    </div>
+    </div><br><br>
+    
     <script>
         $('#toggleGeneration').prop('disabled', true);
         $('#inputValue').change(input => {

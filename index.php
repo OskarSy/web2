@@ -39,8 +39,10 @@ if (isset($_SESSION["id"])) {
               <li class="nav-item">
                 <a class="nav-link" href="./views/registration.php" data-translate="registration"></a>
               </li>
+              
             </ul>
           </div>
+          <a href="print.php" class="btn btn-success btn-sm" role="button" data-translate="Instructions"></a>
         </div>
       </nav>
     </header>

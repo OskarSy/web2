@@ -52,12 +52,16 @@ export default {
         "generatedS": "Generated",
         "submittedS": "Submitted",
         "pointsS": "Points",
-        "exportko": "Export to CVS",
         "generatedTasksStats": "Show generated tasks",
         "showTheTasks": "Show",
         "pickStudent": "Pick a student",
         "setOfTasks": "Set of tasks",
         "correctAnswer": "Correct answer",
         "correctSubmission": "Correct",
+        
+        /////////
+        "Instructions":"Instructions",
+        "exportko": "Export to CVS",
+
 
 }

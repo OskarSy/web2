@@ -49,12 +49,15 @@ export default {
   "generatedS": "Vygeneroval",
   "submittedS": "Odovzdal",
   "pointsS": "Body",
-  "exportko": "Exportovať do CVS",
   "generatedTasksStats": "Zobrazenie vygenerovanych uloh",
   "showTheTasks": "Ukázať",
   "pickStudent": "Vyberte študenta",
   "setOfTasks": "Sada príkladov",
   "correctAnswer": "Správny odpoveď",
   "correctSubmission": "Správnosť",
+ 
+  ////////
+  "Instructions":"Návod",
+  "exportko": "Exportovať do CVS",
 
 }
