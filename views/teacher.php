@@ -8,7 +8,7 @@ if(!isset($_SESSION["role"]) || $_SESSION["role"] !== "teacher"){
     exit;
 }
 
-$groupNames = "SELECT a.name FROM AssignmentGroup a;";
+$groupNames = "SELECT a.name, a.id FROM AssignmentGroup a;";
 $stmt_grnames = $conn->prepare($groupNames);
 $stmt_grnames->execute();
 $grresult = $stmt_grnames->get_result();
@@ -33,11 +33,6 @@ function updateAssignmentGroupPoints($conn, $name, $id) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['generateTasks'])) {
-    $checkbox1 = isset($_POST['checkbox1']) ? 1 : 0;
-    $checkbox2 = isset($_POST['checkbox2']) ? 1 : 0;
-    $checkbox3 = isset($_POST['checkbox3']) ? 1 : 0;
-    $checkbox4 = isset($_POST['checkbox4']) ? 1 : 0;
-
     $datePicker1 = isset($_POST['myDatePicker1']) && !empty($_POST['myDatePicker1']) ? $_POST['myDatePicker1'] : null;
     $datePicker2 = isset($_POST['myDatePicker2']) && !empty($_POST['myDatePicker2']) ? $_POST['myDatePicker2'] : null;
 
@@ -55,43 +50,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['generateTasks'])) {
         echo "One or both of the dates are not set.";
     }
 
-    if ($checkbox1 && $correctDate) {
+    if($correctDate) {
         $dateToPost1 = $datePicker1;
         $dateToPost2 = $datePicker2;
     } else {
         $dateToPost1 = null;
         $dateToPost2 = null;
     }
-    updateAssignmentGroup($conn, $dateToPost1, $dateToPost2, $checkbox1, 8);
 
-    if ($checkbox2 && $correctDate) {
-        $dateToPost1 = $datePicker1;
-        $dateToPost2 = $datePicker2;
-    } else {
-        $dateToPost1 = null;
-        $dateToPost2 = null;
+    foreach($grnames as $result) {
+        $checkbox = isset($_POST[$result['name']]) ? 1 : 0;
+        updateAssignmentGroup($conn, $dateToPost1, $dateToPost2, $checkbox, $result['id']);
     }
-    updateAssignmentGroup($conn, $dateToPost1, $dateToPost2, $checkbox2, 9);
-
-    if ($checkbox3 && $correctDate) {
-        $dateToPost1 = $datePicker1;
-        $dateToPost2 = $datePicker2;
-    } else {
-        $dateToPost1 = null;
-        $dateToPost2 = null;
-    }
-    updateAssignmentGroup($conn, $dateToPost1, $dateToPost2, $checkbox3, 10);
-
-    if ($checkbox4 && $correctDate) {
-        $dateToPost1 = $datePicker1;
-        $dateToPost2 = $datePicker2;
-    } else {
-        $dateToPost1 = null;
-        $dateToPost2 = null;
-    }
-    updateAssignmentGroup($conn, $dateToPost1, $dateToPost2, $checkbox4, 11);
-    
 }
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['definePoints'])) {
     $blokovka1 = isset($_POST['blokovka1']) && !empty($_POST['blokovka1']) && is_numeric($_POST['blokovka1']) ? $_POST['blokovka1'] : null;
@@ -225,25 +197,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['definePoints'])) {
                                 </div>
                             </div>
                             <div style="display: flex; justify-content: center;">
-                                <div class="form-check">
-                                    <input name="checkbox1" class="form-check-input" type="checkbox" value="1" id="checkbox1"/>
-                                    <label class="form-check-label" for="checkbox1" >Blokovka1</label>
-                                </div>
-
-                                <div class="form-check">
-                                    <input name="checkbox2" class="form-check-input" type="checkbox" value="1" id="checkbox2"/>
-                                    <label class="form-check-label" for="checkbox2">Blokovka2</label>
-                                </div>
-
-                                <div class="form-check">
-                                    <input name="checkbox3" class="form-check-input" type="checkbox" value="1" id="checkbox3"/>
-                                    <label class="form-check-label" for="checkbox3">Odozva1</label>
-                                </div>
-
-                                <div class="form-check">
-                                    <input name="checkbox4" class="form-check-input" type="checkbox" value="1" id="checkbox4"/>
-                                    <label class="form-check-label" for="checkbox4">Odozva2</label>
-                                </div>
+                                <?php
+                                foreach($grnames as $result) {
+                                    echo '                                
+                                        <div class="form-check">
+                                            <input name="' . $result["name"] . '" class="form-check-input" type="checkbox" value="1" id="' . $result["name"] . '"/>
+                                            <label class="form-check-label" for="' . $result["name"] . '" >' . $result["name"] . '</label>
+                                        </div>';
+                                }
+                                ?>
                             </div>
 
                             <div class="d-flex justify-content-center mt-2">
