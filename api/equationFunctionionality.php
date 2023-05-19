@@ -1,4 +1,17 @@
 <?php
+function isSolved($assignmentId,$generationIndex,$studentId)
+{
+    require('config.php');
+    $stmt = $conn->prepare("SELECT submittedAnswer FROM StudentAssignmentLink WHERE studentId = ? AND assignmentId = ? AND generationIndex = ?");
+    $stmt->bind_param('sss', $studentId,$assignmentId,$generationIndex);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+      $row = $result->fetch_assoc();
+    } else {
+      return false;
+    }
+}
 
 function generateEquation($id)
 {
@@ -55,14 +68,15 @@ function generateEquation($id)
     }
 
     if (isBlokovka($fileName)) {
-        $blokovkaLogic = '<div id="task" class="text-center">'
+        $blokovkaLogic = '<div id="task" class="text-center my-auto">'
             . '<p data-translate="EqTask">' . $task . '</p><p>' . "\(" . $taskSymbols . "\)"
             .'</p><p data-translate="EqDescription">' . $systemDescriptions
-            . '</p><div class="image-container"><img src="'
-            . $imagePath . '" alt="' . $systemDescriptions
-            . '" class="img-fluid"></div>';        
+            . '</p>';      
+        $img = '<div class="image-container"><img src="'
+        . $imagePath . '" alt="' . $systemDescriptions
+        . '" class="img-fluid"></div>';
     } else {
-        $blokovkaLogic = '<div id="task" class="text-center">';
+        $blokovkaLogic = '<div id="task" class="text-center my-auto">';
         if (!isOdozva1($fileName)) {
             $blokovkaLogic .= '
             <p data-translate="EqOdozva2Task">' . $task . 
@@ -79,7 +93,7 @@ function generateEquation($id)
     }
     // echo $solutions . '<br>'; //ECHOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 
-    return $blokovkaLogic;
+    return [$blokovkaLogic,$img];
 }
 
 

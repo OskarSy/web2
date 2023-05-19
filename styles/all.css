@@ -7,15 +7,9 @@ body,html{
 .container {
     max-width: 500px !important;
   }
-
-  .highlight {
-    background-color: rgb(79, 183, 243);
-    transition: background-color 0.3s ease;
+ 
   
-  }
-  
-  .highlight:hover {
-    background-color: rgb(77, 179, 238);
-   
-  }
+  .hidden {
+    display: none;
+}
   

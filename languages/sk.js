@@ -19,6 +19,7 @@ export default {
   "role": "Roľa",
   "student": "Študent",
   "teacher": "Učiteľ",
+  "noEquationsToGenerate": "Žiadne príklady k dispozícii pre generovanie",
 
   //Oskar=============================================================================
   "solution": "Ukáž výsledok",

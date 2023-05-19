@@ -77,12 +77,13 @@ $sidebarItems = array();
                 </div>
             </div>
         </nav>
-    </header><br>
+    </header>
     <div class="container-fluid">
         <?php
-        echo generateEquation($_GET['equationId']);
-        ?><br>
-        <div id="mathquill-editor"></div><br><br>
+        echo generateEquation($_GET['equationId'])[0];
+        echo generateEquation($_GET['equationId'])[1];
+        ?>
+        <div id="mathquill-editor"></div>
         <button id="submit-btn" data-translate="submit" class="btn btn-primary">Submit</button>
     </div>
     <script type="text/javascript">
@@ -118,7 +119,6 @@ $sidebarItems = array();
 
     </script>
     <script src="../scripts/global.js"></script>
-
     <script type="module" src="../languages/languageSwitching.js"></script>
 </body>
 

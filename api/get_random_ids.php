@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
   $generatedEquations = array();
   foreach ($randomKeys as $key) {
-    $generatedEquations[] = array('id' => $availableIds[$key], 'equation' => generateEquation($availableIds[$key]));
+    $generatedEquations[] = array('id' => $availableIds[$key], 'equation' => generateEquation($availableIds[$key])[0],'img'=>generateEquation($availableIds[$key])[1], 'isSolved'=>false);
   }
   $_SESSION['currentKeys']=$randomKeys;
   $json = json_encode($generatedEquations);

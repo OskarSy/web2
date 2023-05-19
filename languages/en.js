@@ -19,6 +19,7 @@ export default {
         "role": "Role",
         "student": "Student",
         "teacher": "Teacher",
+        "noEquationsToGenerate": "No equations to generate from",
 
         //Oskar=============================================================================
 
