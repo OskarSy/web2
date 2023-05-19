@@ -67,7 +67,7 @@ $sidebarItems = array();
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item float-right">
-                            <a class="nav-link" href="./studentHome.php">Home</a>
+                            <a class="nav-link" href="../views/studentHome.php">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="../api/logout.php">Logout</a>
@@ -77,7 +77,7 @@ $sidebarItems = array();
                 </div>
             </div>
         </nav>
-    </header>
+    </header><br>
     <div class="container-fluid">
         <?php
         echo generateEquation($_GET['equationId'])[0];
