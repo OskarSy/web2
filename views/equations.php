@@ -3,10 +3,10 @@ require_once "../api/config.php";
 require_once("../api/equationFunctionionality.php");
 
 if (empty($_SESSION["id"])) {
-    header("Location: https://site215.webte.fei.stuba.sk/semestralka/");
+    header("Location: ../index.php");
 }
 if (empty($_GET['equationId'])) {
-    header("Location: https://site215.webte.fei.stuba.sk/semestralka/views/studentHome.php");
+    header("Location: views/studentHome.php");
 }
 $generationIndex = $_SESSION['generationIndex'];
 $studentId = $_SESSION['studentId'];

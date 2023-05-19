@@ -3,7 +3,7 @@ if (isset($_SESSION["id"])) {
   if ($_SESSION["role"] == 'student') {
     header("Location: https://site215.webte.fei.stuba.sk/semestralka/views/equations.php");
   } else if ($_SESSION["role"] == 'teacher') {
-    header("Location: https://site215.webte.fei.stuba.sk/semestralka/views/teachers.php");
+    header("Location: views/teachers.php");
   } 
 } ?>
 <!DOCTYPE html>

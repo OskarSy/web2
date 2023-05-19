@@ -3,7 +3,7 @@ require_once('../api/config.php');
 require_once('../api/equationFunctionionality.php');
 session_start();
 if (empty($_SESSION["id"])) {
-    header("Location: https://site215.webte.fei.stuba.sk/semestralka/");
+    header("Location: ../index.php");
 }
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
