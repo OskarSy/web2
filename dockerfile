@@ -21,6 +21,7 @@ COPY ./views/equations.php ./views/
 COPY ./languages/en.js ./languages/
 COPY ./languages/sk.js ./languages/
 COPY ./templates/navbar.php ./templates/
+COPY ./script/global.js ./script/
 COPY ./languages/languageSwitching.js ./languages/
 COPY ./styles/all.css ./styles/
 COPY ./equations/images/blokovka01_00002.jpg ./images/equations/

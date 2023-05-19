@@ -6,7 +6,7 @@ if (empty($_SESSION["id"])) {
     header("Location: ../index.php");
 }
 if (empty($_GET['equationId'])) {
-    header("Location: views/studentHome.php");
+    header("Location: ../views/studentHome.php");
 }
 $generationIndex = $_SESSION['generationIndex'];
 $studentId = $_SESSION['studentId'];
@@ -82,7 +82,7 @@ $sidebarItems = array();
         <?php
         echo generateEquation($_GET['equationId'])[0];
         echo generateEquation($_GET['equationId'])[1];
-        ?>
+        ?><br>
         <div id="mathquill-editor"></div>
         <button id="submit-btn" data-translate="submit" class="btn btn-primary">Submit</button>
     </div>
