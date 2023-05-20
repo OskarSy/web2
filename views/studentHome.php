@@ -14,6 +14,13 @@ if ($_SESSION['role'] == 'student' && isset($_SESSION['id'])) {
     header("Location: ../index.php");
 }
 
+$formattedDate = date('Y-m-d');
+$stmt = $conn->prepare("UPDATE AssignmentGroup SET canBeUsed = 1 WHERE ? BETWEEN canBeUsedFrom AND canBeUsedTo");
+$stmt->bind_param("s", $formattedDate);
+$stmt->execute();
+$stmt = $conn->prepare("UPDATE AssignmentGroup SET canBeUsed = 0 WHERE ? NOT BETWEEN canBeUsedFrom AND canBeUsedTo");
+$stmt->bind_param("s", $formattedDate);
+$stmt->execute();
 
 $lastGenerationIndex = $conn->query("SELECT MAX(generationIndex) AS max
     FROM StudentAssignmentLink WHERE studentId = '$studentId'");
