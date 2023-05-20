@@ -1,8 +1,7 @@
 <?php
 require_once ('config.php');
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $json = file_get_contents('php://input');
   $formData = json_decode($json);
@@ -32,9 +31,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $stmt->execute([$name, $surname, $id]);
       $studentId = mysqli_insert_id($conn);
       $_SESSION['studentId'] = $studentId;
+      $_SESSION['generationIndex'] = 0;
     }
     http_response_code(200);
-    echo $role;
+    echo "ok";
   }
   exit();
 }

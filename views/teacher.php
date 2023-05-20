@@ -1,7 +1,7 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+
 require_once("../api/config.php");
+
 
 if(!isset($_SESSION["role"]) || $_SESSION["role"] !== "teacher"){
     header("Location: ../index.php");
@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['generateTasks'])) {
     }
 
     foreach($grnames as $result) {
-        $checkbox = isset($_POST[$result['name']]) ? 1 : 0;
+        $checkbox = isset($_POST[$result['name']]) ? 0 : 1;
         updateAssignmentGroup($conn, $dateToPost1, $dateToPost2, $checkbox, $result['id']);
     }
 }

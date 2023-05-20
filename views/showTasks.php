@@ -23,7 +23,6 @@ $showTable = false;
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['selectStudent'])) {
     $selectedStudentId = $_POST['selectStudent'];
     $showTable = True;
-    var_dump($selectedStudentId);
 
     $myQ = 'SELECT ag.name, ass.correctAnswer, sal.submittedAnswer, 
                     IFNULL(sal.achievedPoints, 0) AS achievedPoints, 

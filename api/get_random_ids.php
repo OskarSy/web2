@@ -5,55 +5,42 @@ require_once('equationFunctionionality.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $json = file_get_contents('php://input');
-  $formData = json_decode($json); 
-  $amountToGenerate = $formData->generationCount;
+  $formData = json_decode($json);
+  $name = $formData->name;
 
-  $availableIds = $_SESSION['availableEquations'];
-  
-
+  $availableEquations = $_SESSION['availableEquations'];
   $studentId = $_SESSION["studentId"];
 
-  $stmt = $conn->prepare("UPDATE Student SET generatedCount = ? where id = ?");
-  $stmt->bind_param('ss', $amountToGenerate, $studentId);
+  $stmt = $conn->prepare("UPDATE Student SET generatedCount = generatedCount + 1 WHERE id = ?");
+  $stmt->bind_param('i', $studentId);
   $stmt->execute();
 
+  $generationIndex = $_SESSION['generationIndex'];
 
-
-  $stmt = $conn->prepare("SELECT generationIndex FROM StudentAssignmentLink WHERE studentId = ? ORDER BY generationIndex DESC LIMIT 1");
-  $stmt->bind_param('s', $studentId);
-  $stmt->execute();
-  $result = $stmt->get_result();
-  if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    $currentValue = $row['generationIndex'];
-    $generationIndex = $currentValue + 1;
-  } else {
-    $generationIndex = 0;
-  }
-
-  $_SESSION['generationIndex'] = $generationIndex;
-
-  
-  if($amountToGenerate==1){
-    $randomKeys[] = array_rand($availableIds, $amountToGenerate);
-  }
-  else{
-    $randomKeys = array_rand($availableIds, $amountToGenerate);
-  }
- 
-  if (count($availableIds) >= $amountToGenerate) {
-    foreach ($randomKeys as $key) {
-      $stmt = $conn->prepare('INSERT INTO StudentAssignmentLink (assignmentId, studentId,generationIndex) VALUES (?, ?, ?)');
-      $stmt->bind_param('sss', $availableIds[$key], $studentId, $generationIndex);
-      $stmt->execute();
+  $generatedEquations = getAllGeneratedEquations($studentId, $generationIndex);
+  $usedIds = [];
+  if ($generatedEquations) {
+      $usedIds = array_column($generatedEquations, 'id');    
+  } 
+  foreach ($availableEquations as $eq) {
+    if ($eq['name'] == $name) {
+      if(array_search($eq['id'],  $usedIds) === false){
+        $selectedGroup[] = $eq['id'];    
+      }
     }
   }
-  $generatedEquations = array();
-  foreach ($randomKeys as $key) {
-    $generatedEquations[] = array('id' => $availableIds[$key], 'equation' => generateEquation($availableIds[$key])[0],'img'=>generateEquation($availableIds[$key])[1], 'isSolved'=>false);
+  $randomKey = array_rand($selectedGroup, 1);
+
+  if (count($selectedGroup) >= 0) {
+    $stmt = $conn->prepare('INSERT INTO StudentAssignmentLink (assignmentId, studentId, generationIndex) VALUES (?, ?, ?)');
+    $stmt->bind_param('sss', $selectedGroup[$randomKey], $studentId, $generationIndex);
+    $stmt->execute();
   }
-  $_SESSION['currentKeys']=$randomKeys;
-  $json = json_encode($generatedEquations);
+  $generatedEquation = array('id' => $selectedGroup[$randomKey], 'equation' => generateEquation($selectedGroup[$randomKey])[0], 'img' => generateEquation($selectedGroup[$randomKey])[1], 'isSubmitted' => false);
+  
+  $oldEquations = getAllGeneratedEquations($studentId, $generationIndex);
+
+  $json = json_encode($oldEquations);
   echo $json;
   exit();
 }

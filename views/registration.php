@@ -161,13 +161,8 @@ if (isset($_SESSION["id"])) {
           data: JSON.stringify(formData),
           dataType: "text",
         })
-        .done((data) => {
-          if (data === 'student') {
-            window.location.href = './equations.php';
-          }
-          else if(data === 'teacher') {
-            window.location.href = './teacher.php';
-          }
+        .done((data) => {          
+          window.location.href = '../index.php';          
         })
         .fail((error) => {
           console.log(error);

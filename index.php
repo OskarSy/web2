@@ -5,7 +5,8 @@ if (isset($_SESSION["id"])) {
   } else if ($_SESSION["role"] == 'teacher') {
     header("Location: views/teachers.php");
   } 
-} ?>
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 

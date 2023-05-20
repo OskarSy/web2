@@ -1,8 +1,7 @@
 <?php
 require_once ('config.php');
+require_once('equationFunctionionality.php');
 
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -34,6 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }           
 
 
+            if($role == 'student'){
+                writeIntoDatabase();               
+            }
             http_response_code(200);
             echo $role;
         } 

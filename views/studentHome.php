@@ -1,47 +1,52 @@
 <?php
 require_once('../api/config.php');
 require_once('../api/equationFunctionionality.php');
+
+
+
 session_start();
 if (empty($_SESSION["id"])) {
     header("Location: ../index.php");
 }
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+if ($_SESSION['role'] == 'student' && isset($_SESSION['id'])) {
+    $studentId = $_SESSION['studentId'];
+} else {
+    header("Location: ../index.php");
+}
 
 
-$formattedDate = date('Y-m-d');
-$stmt = $conn->prepare("UPDATE AssignmentGroup SET canBeUsed = 1 WHERE ? BETWEEN canBeUsedFrom AND canBeUsedTo");
-$stmt->bind_param("s", $formattedDate);
-$stmt->execute();
-$stmt = $conn->prepare("UPDATE AssignmentGroup SET canBeUsed = 0 WHERE ? NOT BETWEEN canBeUsedFrom AND canBeUsedTo");
-$stmt->bind_param("s", $formattedDate);
-$stmt->execute();
+$lastGenerationIndex = $conn->query("SELECT MAX(generationIndex) AS max
+    FROM StudentAssignmentLink WHERE studentId = '$studentId'");
+if ($lastGenerationIndex->num_rows > 0) {
+    $generationIndex = $lastGenerationIndex->fetch_assoc()['max'];
+} 
+if($generationIndex==null){
+    $generationIndex = 0;
+}
 
-$result = $conn->query("SELECT a.id
-                        FROM Assignments a
-                        INNER JOIN AssignmentGroup ag ON a.groupId = ag.id
-                        WHERE ag.canBeUsed = '1'");
+$generatedEquations = getAllGeneratedEquations($studentId, $generationIndex);
 $ids = array();
-
+$stmt = $conn->prepare("SELECT a.id, ag.name
+            FROM Assignments a
+            INNER JOIN AssignmentGroup ag ON a.groupId = ag.id            
+            WHERE ag.canBeUsed = '1'
+            AND a.id NOT IN (SELECT assignmentId
+                FROM StudentAssignmentLink
+                WHERE studentId = ?
+                AND generationIndex = ?
+                AND submittedAnswer IS NOT NULL) ");
+$stmt->bind_param('ii', $studentId, $generationIndex);
+$stmt->execute();
+$result = $stmt->get_result();
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        $ids[] = $row['id'];
+        $availableIds[] = array('name'=>$row['name'],'id'=>$row['id']);
     }
+} else {
+    $generationIndex++;
 }
-$_SESSION['availableEquations'] = $ids;
-$_SESSION['generationMax'] = $generationMax = count($ids);
-
-
-if (isset($_SESSION['generationIndex'])) {
-    $generationIndex = $_SESSION['generationIndex'];
-    $availableIds = $_SESSION['availableEquations'];
-    $randomKeys = $_SESSION['currentKeys'];
-    
-    $generatedEquations = array();
-    foreach ($randomKeys as $key) {
-        $generatedEquations[] = array('id' => $availableIds[$key], 'equation' => generateEquation($availableIds[$key])[0],'img'=>generateEquation($availableIds[$key])[1], 'isSolved'=>isSolved($studentId,$key,$generationIndex));
-    }
-}
+$_SESSION['generationIndex'] = $generationIndex;
+$_SESSION['availableEquations'] = $availableIds;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -83,8 +88,6 @@ if (isset($_SESSION['generationIndex'])) {
                         </li>
                     </ul>
                 </div>
-
-
             </div>
         </nav>
     </header>
@@ -92,9 +95,22 @@ if (isset($_SESSION['generationIndex'])) {
         <div class="row">
             <div class="col-10 mx-auto mt-4">
                 <div class="mb-4 mx-auto d-flex flex-column col-12 col-md-3 col-lg-2">
-                    <input class="form-control my-2 <?php $generationMax == 0 ? 'hidden' : '' ?>" type="number" id="inputValue" min="1" max="<?php echo $generationMax ?>">
-                    <button type="button" class="btn btn-primary <?php $generationMax == 0 ? 'hidden' : '' ?>" id="toggleGeneration" data-translate="generateEQ">Generate equations</button>
-                    <!-- <h3 class="<?php $generationMax > 0 ? 'hidden' : '' ?>" data-translate="noEquationsToGenerate"></h3> -->
+                    <select class="form-control my-2" id="selectGroup">
+                        <?php
+                            $availableGroups = $conn->query("SELECT id,name
+                            FROM AssignmentGroup WHERE canBeUsed = 1");
+                            if ($availableGroups->num_rows > 0) {
+                                $noGroups = false;
+                                while ($row = $availableGroups->fetch_assoc()) {
+                                    echo '<option value="' . $row['name'] . '" >' . $row['name'] . '</option>';
+                                }
+                            }
+                            else{
+                                $noGroups = true;
+                            }
+                        ?>
+                    </select>
+                    <button type="button" class="btn btn-primary" id="toggleGeneration" data-translate="generateEQ" <?php $noGroups ? 'disabled' : '' ?>>Generate equation</button>
                 </div>
                 <div id="card-container">
 
@@ -104,24 +120,14 @@ if (isset($_SESSION['generationIndex'])) {
     </div>
 
     <script>
-        $('#toggleGeneration').prop('disabled', true);
-        $('#inputValue').change(input => {
-            console.log(input);
-            if (input.target.value == '') {
-                $('#toggleGeneration').prop('disabled', true);
-            } else {
-                $('#toggleGeneration').prop('disabled', false);
-            }
-        });
         $('#toggleGeneration').click(() => {
             toggleGeneration();
         });
         <?php
-        if (isset($_SESSION['generationIndex'])) {
-            echo "generateCards(" . json_encode($generatedEquations) . ");"; 
+        if ($generatedEquations!=null) {
+            echo "generateCards(" . json_encode($generatedEquations) . ");";
         }
         ?>
-
 
         function generateCards(elements) {
             console.log(elements);
@@ -133,25 +139,27 @@ if (isset($_SESSION['generationIndex'])) {
                 const card = document.createElement('div');
                 card.classList.add('col');
                 card.classList.add('mb-4');
-                console.log(element.isSolved);
+                console.log(element.isSubmitted);
                 card.innerHTML = `
-                <div class="card h-100" data-id="${element.id}">
-                    <div class="overlay card" ${element.isSolved ? 'hidden' : ''}>
-                        <h1 class="my-auto mx-auto text-light">Solved</h1>
-                    </div>
-                    <div class="highlight" hidden></div>
+                <div class="card h-100" data-id="${element.id}">                    
                     <div class="card-body content">
+                        <div class="overlay card" ${element.isSubmitted ? '' : 'hidden'}>
+                            <h1 class="my-auto mx-auto text-light">Solved</h1>
+                        </div>
+                        <div class="highlight" hidden>
+                        </div>                    
                         ${element.equation}
                         ${element.img ?? ''}
                     </div>
                 </div>`;
                 const highlight = card.getElementsByClassName('highlight').item(0);
-                card.addEventListener('mouseenter', e=> {
-                   $(highlight).prop('hidden',false);
+                const cardBody = card.getElementsByClassName('card-body').item(0);
+                cardBody.addEventListener('mouseenter', e => {
+                    $(highlight).prop('hidden', false);
                 });
 
-                card.addEventListener('mouseleave', function() {
-                    $(highlight).prop('hidden',true);
+                cardBody.addEventListener('mouseleave', function() {
+                    $(highlight).prop('hidden', true);
                 });
 
                 row.appendChild(card);
@@ -174,14 +182,14 @@ if (isset($_SESSION['generationIndex'])) {
 
         function toggleGeneration() {
 
-            var generationCount = $('#inputValue').val();
+            let name = $('#selectGroup').val();
 
             $.ajax({
                 url: '../api/get_random_ids.php',
                 type: 'POST',
                 contentType: "application/json",
                 data: JSON.stringify({
-                    generationCount: generationCount
+                    name: name
                 })
             }).done(response => {
                 console.log(response);
@@ -196,4 +204,5 @@ if (isset($_SESSION['generationIndex'])) {
     <script src="../scripts/global.js"></script>
     <script type="module" src="../languages/languageSwitching.js"></script>
 </body>
+
 </html>
